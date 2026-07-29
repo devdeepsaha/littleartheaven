@@ -1,8 +1,9 @@
 import { business } from "@/data/site";
+import { Reveal } from "@/components/ui/reveal";
 
 export function FounderStory() {
   return (
-    <section className="site-shell py-14">
+    <Reveal as="section" className="site-shell py-14">
       <div className="grid gap-6 rounded-[2.5rem] border border-[#f2dccd] bg-[linear-gradient(135deg,#fffaf4_0%,#fff1ec_52%,#f8fbf6_100%)] px-6 py-8 text-slate-900 shadow-[0_24px_70px_rgba(149,115,92,0.12)] lg:grid-cols-[0.85fr_1.15fr] lg:px-10">
         <div className="rounded-[1.9rem] border border-[#ecd3c1] bg-[linear-gradient(180deg,#fff8ef_0%,#fde9df_100%)] p-6 shadow-[0_14px_40px_rgba(214,160,130,0.16)]">
           <p className="text-xs uppercase tracking-[0.35em] text-[#c9795d]">
@@ -34,6 +35,6 @@ export function FounderStory() {
           </div>
         </div>
       </div>
-    </section>
+    </Reveal>
   );
 }

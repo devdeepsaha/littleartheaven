@@ -4,8 +4,10 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useCart } from "@/components/providers/cart-provider";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { formatPrice } from "@/lib/utils";
 import { ProductWithCategory } from "@/types";
+import { ButtonSpinner } from "@/components/ui/button-spinner";
 
 type OrderResponse = {
   error?: string;
@@ -16,8 +18,15 @@ type OrderResponse = {
 export function CheckoutForm({ products }: { products: ProductWithCategory[] }) {
   const router = useRouter();
   const { items, clearCart } = useCart();
+  const reducedMotion = useReducedMotion();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [invalidPulse, setInvalidPulse] = useState(false);
+  const [fieldValues, setFieldValues] = useState({
+    customerName: "",
+    phone: "",
+    email: "",
+  });
 
   const cartProducts = useMemo(
     () =>
@@ -43,9 +52,22 @@ export function CheckoutForm({ products }: { products: ProductWithCategory[] }) 
   return (
     <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
       <form
-        className="rounded-[1.7rem] border border-white/70 bg-white p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)]"
+        className={`rounded-[1.7rem] border border-white/70 bg-white p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)] ${invalidPulse && !reducedMotion ? "field-shake" : ""}`}
         onSubmit={async (event) => {
           event.preventDefault();
+          if (!cartProducts.length) {
+            setInvalidPulse(true);
+            window.setTimeout(() => setInvalidPulse(false), 320);
+            return;
+          }
+
+          const form = event.currentTarget;
+          if (!form.reportValidity()) {
+            setInvalidPulse(true);
+            window.setTimeout(() => setInvalidPulse(false), 320);
+            return;
+          }
+
           setSubmitting(true);
           setError(null);
 
@@ -115,8 +137,17 @@ export function CheckoutForm({ products }: { products: ProductWithCategory[] }) 
               id="customerName"
               name="customerName"
               required
+              value={fieldValues.customerName}
+              onChange={(event) =>
+                setFieldValues((current) => ({ ...current, customerName: event.target.value }))
+              }
               className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-[#e89a8f]"
             />
+            {fieldValues.customerName.trim() ? (
+              <span className="mt-2 inline-flex success-pop text-xs font-semibold text-emerald-600">
+                ✓ Looks good
+              </span>
+            ) : null}
           </div>
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="phone">
@@ -126,8 +157,17 @@ export function CheckoutForm({ products }: { products: ProductWithCategory[] }) 
               id="phone"
               name="phone"
               required
+              value={fieldValues.phone}
+              onChange={(event) =>
+                setFieldValues((current) => ({ ...current, phone: event.target.value }))
+              }
               className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-[#e89a8f]"
             />
+            {fieldValues.phone.trim() ? (
+              <span className="mt-2 inline-flex success-pop text-xs font-semibold text-emerald-600">
+                ✓ Contact ready
+              </span>
+            ) : null}
           </div>
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="email">
@@ -137,8 +177,17 @@ export function CheckoutForm({ products }: { products: ProductWithCategory[] }) 
               id="email"
               name="email"
               type="email"
+              value={fieldValues.email}
+              onChange={(event) =>
+                setFieldValues((current) => ({ ...current, email: event.target.value }))
+              }
               className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-[#e89a8f]"
             />
+            {fieldValues.email.includes("@") ? (
+              <span className="mt-2 inline-flex success-pop text-xs font-semibold text-emerald-600">
+                ✓ Email looks valid
+              </span>
+            ) : null}
           </div>
           <div className="md:col-span-2">
             <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="address">
@@ -168,9 +217,16 @@ export function CheckoutForm({ products }: { products: ProductWithCategory[] }) 
         <button
           type="submit"
           disabled={submitting || !cartProducts.length}
-          className="mt-6 rounded-full bg-[linear-gradient(135deg,#f7c9b0_0%,#e89a8f_100%)] px-6 py-3 text-sm font-semibold text-[#5b312d] transition hover:brightness-[1.03] disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+          className="mt-6 inline-flex min-w-[10rem] items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#f7c9b0_0%,#e89a8f_100%)] px-6 py-3 text-sm font-semibold text-[#5b312d] transition hover:brightness-[1.03] disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
         >
-          {submitting ? "Placing order..." : "Place order"}
+          {submitting ? (
+            <>
+              <ButtonSpinner />
+              <span>Placing order...</span>
+            </>
+          ) : (
+            "Place order"
+          )}
         </button>
       </form>
       <aside className="rounded-[1.7rem] border border-white/70 bg-white p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">

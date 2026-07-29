@@ -5,6 +5,7 @@ import { CategoryCard } from "@/components/category-card";
 import { FounderStory } from "@/components/founder-story";
 import { Hero } from "@/components/hero";
 import { ProductCard } from "@/components/product-card";
+import { Reveal } from "@/components/ui/reveal";
 import { business } from "@/data/site";
 import { getCategories, getFeaturedProducts } from "@/lib/catalog";
 
@@ -20,10 +21,11 @@ export default async function Home() {
   ]);
 
   return (
-    <>
+      <>
       <Hero />
       <FounderStory />
-      <section className="site-shell py-10">
+      {/* These one-time section reveals keep the page readable by introducing new groups only when they enter view. */}
+      <Reveal as="section" className="site-shell py-10">
         <div className="flex items-end justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.35em] text-slate-500">
@@ -40,8 +42,8 @@ export default async function Home() {
             <CategoryCard key={category.id} {...category} />
           ))}
         </div>
-      </section>
-      <section className="site-shell py-10">
+      </Reveal>
+      <Reveal as="section" className="site-shell py-10" delay={80}>
         <div className="flex items-end justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.35em] text-slate-500">
@@ -58,7 +60,7 @@ export default async function Home() {
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
-      </section>
+      </Reveal>
     </>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -22,6 +23,7 @@ export function ShopCatalog({
   const categoryRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const productsRef = useRef<HTMLElement | null>(null);
   const [selectedCategorySlug, setSelectedCategorySlug] = useState(activeCategorySlug);
+  const [filterKey, setFilterKey] = useState(0);
 
   useEffect(() => {
     setSelectedCategorySlug(activeCategorySlug);
@@ -46,6 +48,7 @@ export function ShopCatalog({
 
   function applyCategoryFilter(slug?: string) {
     setSelectedCategorySlug(slug);
+    setFilterKey((value) => value + 1);
     window.history.replaceState(null, "", slug ? `/shop?category=${slug}` : "/shop");
 
     requestAnimationFrame(() => {
@@ -173,9 +176,16 @@ export function ShopCatalog({
             </p>
           </div>
         </div>
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+        {/* Re-mounting the filtered grid lets the products fade and settle into their new positions instead of jumping. */}
+        <div key={filterKey} className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {filteredProducts.map((product, index) => (
+            <div
+              key={product.id}
+              className="hero-stagger"
+              style={{ "--stagger-delay": `${index * 70}ms` } as CSSProperties}
+            >
+              <ProductCard product={product} />
+            </div>
           ))}
         </div>
       </section>

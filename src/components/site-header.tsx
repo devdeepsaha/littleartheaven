@@ -41,6 +41,7 @@ export async function SiteHeader() {
             </Link>
             <Link
               href="/cart"
+              data-cart-anchor="true"
               className="ml-1 inline-flex items-center gap-2 rounded-full border border-[#efcfbf] bg-[linear-gradient(135deg,#f7c9b0_0%,#e89a8f_100%)] px-4 py-2.5 text-sm font-semibold text-[#5b312d] shadow-[0_12px_30px_rgba(213,147,124,0.28)] transition hover:brightness-[1.03]"
             >
               <span
@@ -90,6 +91,7 @@ export async function SiteHeader() {
             <div className="flex items-center gap-2">
               <Link
                 href="/cart"
+                data-cart-anchor="true"
                 className="inline-flex items-center gap-2 rounded-full border border-[#efcfbf] bg-[linear-gradient(135deg,#f7c9b0_0%,#e89a8f_100%)] px-3 py-2 text-xs font-semibold text-[#5b312d] shadow-[0_12px_30px_rgba(213,147,124,0.22)]"
               >
                 <span>Cart</span>

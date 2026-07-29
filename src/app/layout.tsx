@@ -4,6 +4,7 @@ import { Nunito, Caveat } from "next/font/google";
 import { CartProvider } from "@/components/providers/cart-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { RouteTransition } from "@/components/ui/route-transition";
 import { business } from "@/data/site";
 
 import "./globals.css";
@@ -136,7 +137,10 @@ export default function RootLayout({
         <CartProvider>
           <div className="flex min-h-screen flex-col bg-[linear-gradient(180deg,#fffdf7_0%,#fef2f2_26%,#eff6ff_100%)] text-slate-900">
             <SiteHeader />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1">
+              {/* This lightweight route wrapper softens page swaps so the storefront feels continuous instead of a hard reload. */}
+              <RouteTransition>{children}</RouteTransition>
+            </main>
             <SiteFooter />
           </div>
         </CartProvider>

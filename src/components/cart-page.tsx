@@ -1,15 +1,17 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { useCart } from "@/components/providers/cart-provider";
+import { MotionImage } from "@/components/ui/motion-image";
 import { formatPrice } from "@/lib/utils";
 import { ProductWithCategory } from "@/types";
 
 export function CartPage({ products }: { products: ProductWithCategory[] }) {
   const { items, updateItem, removeItem } = useCart();
+  const [removingSlug, setRemovingSlug] = useState<string | null>(null);
+  const [flashSlug, setFlashSlug] = useState<string | null>(null);
 
   const lines = useMemo(
     () =>
@@ -35,6 +37,14 @@ export function CartPage({ products }: { products: ProductWithCategory[] }) {
   if (!lines.length) {
     return (
       <div className="rounded-[1.7rem] border border-dashed border-slate-300 bg-white/75 p-8 text-center">
+        {/* This empty-state keeps the cart from feeling dead by giving it a small handcrafted gift vignette. */}
+        <div className="mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-[2rem] bg-[linear-gradient(180deg,#fff6ef_0%,#feece3_100%)] shadow-[0_18px_40px_rgba(226,135,121,0.12)]">
+          <div className="relative h-14 w-14 rounded-[1.2rem] bg-white shadow-[0_10px_25px_rgba(15,23,42,0.08)]">
+            <span className="absolute inset-x-5 top-0 h-full w-1 rounded-full bg-[#f3b2a2]" />
+            <span className="absolute left-0 right-0 top-5 h-1 rounded-full bg-[#f3b2a2]" />
+            <span className="floating-sparkle absolute -right-2 -top-2 text-lg">✦</span>
+          </div>
+        </div>
         <h1 className="font-[family-name:var(--font-display)] text-3xl text-slate-900">
           Your cart is empty
         </h1>
@@ -57,14 +67,15 @@ export function CartPage({ products }: { products: ProductWithCategory[] }) {
         {lines.map((item) => (
           <article
             key={item.slug}
-            className="grid gap-4 rounded-[1.6rem] border border-white/70 bg-white p-4 shadow-[0_16px_40px_rgba(15,23,42,0.08)] md:grid-cols-[96px_1fr_auto]"
+            className={`grid gap-4 rounded-[1.6rem] border border-white/70 bg-white p-4 shadow-[0_16px_40px_rgba(15,23,42,0.08)] md:grid-cols-[96px_1fr_auto] ${removingSlug === item.slug ? "collapse-out" : ""}`}
           >
             <div className="relative aspect-square overflow-hidden rounded-[1rem]">
-              <Image
+              <MotionImage
                 src={item.images[0]}
                 alt={item.name}
                 fill
                 sizes="96px"
+                wrapperClassName="h-full w-full"
                 className="object-cover"
               />
             </div>
@@ -78,20 +89,29 @@ export function CartPage({ products }: { products: ProductWithCategory[] }) {
               <p className="mt-2 text-sm leading-5 text-slate-600">{item.shortDescription}</p>
               <button
                 type="button"
-                onClick={() => removeItem(item.slug)}
+                onClick={() => {
+                  setRemovingSlug(item.slug);
+                  window.setTimeout(() => removeItem(item.slug), 220);
+                }}
                 className="mt-4 text-sm font-semibold text-rose-600"
               >
                 Remove
               </button>
             </div>
             <div className="flex flex-col items-start gap-3 md:items-end">
-              <span className="text-base font-semibold text-slate-900">
+              <span
+                className={`rounded-full px-2 py-1 text-base font-semibold text-slate-900 ${flashSlug === item.slug ? "price-flash" : ""}`}
+              >
                 {formatPrice(item.total)}
               </span>
               <div className="flex items-center gap-1.5 rounded-full border border-[#eadfd6] bg-[#fffaf7] px-1.5 py-1">
                 <button
                   type="button"
-                  onClick={() => updateItem(item.slug, item.quantity - 1)}
+                  onClick={() => {
+                    setFlashSlug(item.slug);
+                    updateItem(item.slug, item.quantity - 1);
+                    window.setTimeout(() => setFlashSlug(null), 340);
+                  }}
                   className="h-9 w-9 rounded-full bg-[#f6efe9] text-base text-[#7c5a52]"
                 >
                   -
@@ -99,7 +119,11 @@ export function CartPage({ products }: { products: ProductWithCategory[] }) {
                 <span className="min-w-8 text-center text-sm font-semibold">{item.quantity}</span>
                 <button
                   type="button"
-                  onClick={() => updateItem(item.slug, item.quantity + 1)}
+                  onClick={() => {
+                    setFlashSlug(item.slug);
+                    updateItem(item.slug, item.quantity + 1);
+                    window.setTimeout(() => setFlashSlug(null), 340);
+                  }}
                   className="h-9 w-9 rounded-full bg-[#e89a8f] text-base text-white"
                 >
                   +

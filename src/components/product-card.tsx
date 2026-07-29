@@ -1,23 +1,31 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import { formatPrice } from "@/lib/utils";
 import { ProductWithCategory } from "@/types";
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { MotionImage } from "@/components/ui/motion-image";
 
 export function ProductCard({ product }: { product: ProductWithCategory }) {
   return (
-    <article className="overflow-hidden rounded-[1.35rem] border border-white/70 bg-white shadow-[0_14px_32px_rgba(15,23,42,0.08)] sm:rounded-[1.5rem] sm:shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+    <article className="group overflow-hidden rounded-[1.35rem] border border-white/70 bg-white shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition duration-200 ease-[var(--motion-ease-standard)] hover:-translate-y-0.5 hover:shadow-[0_18px_44px_rgba(15,23,42,0.12)] sm:rounded-[1.5rem] sm:shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
       <Link href={`/product/${product.slug}`} className="block">
         <div className="relative min-h-[162px] overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(250,204,21,0.15),_transparent_55%),linear-gradient(180deg,#fff,#f8fafc)] sm:min-h-0 sm:aspect-[4/5]">
-          <Image
+          {/* Keeping the image motion inside the crop gives tactile zoom feedback without shifting the card itself. */}
+          <MotionImage
             src={product.images[0]}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
             quality={72}
-            className="object-cover transition duration-500 hover:scale-105"
+            wrapperClassName="h-full w-full"
+            className="object-cover transition duration-500 group-hover:scale-[1.035]"
           />
+          {/* This secondary action appears right at the product edge so attention stays on the card instead of jumping elsewhere. */}
+          <div className="quick-action absolute inset-x-3 bottom-3 hidden sm:block">
+            <span className="inline-flex rounded-full border border-white/80 bg-white/95 px-3 py-2 text-xs font-semibold text-slate-700 shadow-[0_12px_28px_rgba(15,23,42,0.12)]">
+              Quick view
+            </span>
+          </div>
         </div>
       </Link>
       <div className="space-y-2.5 p-2.5 sm:space-y-3 sm:p-4">
@@ -54,7 +62,12 @@ export function ProductCard({ product }: { product: ProductWithCategory }) {
           >
             View details
           </Link>
-          <AddToCartButton slug={product.slug} disabled={!product.available} />
+          <AddToCartButton
+            slug={product.slug}
+            disabled={!product.available}
+            imageUrl={product.images[0]}
+            label={product.name}
+          />
         </div>
       </div>
     </article>

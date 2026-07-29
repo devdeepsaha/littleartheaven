@@ -3,6 +3,14 @@
 :root {
   --background: #fffdf7;
   --foreground: #0f172a;
+  --motion-duration-micro: 180ms;
+  --motion-duration-standard: 280ms;
+  --motion-duration-section: 420ms;
+  --motion-duration-page: 520ms;
+  --motion-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-gentle: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --motion-ease-spring: cubic-bezier(0.2, 0.9, 0.25, 1.15);
 }
 
 * {
@@ -42,4 +50,341 @@ select {
   font-family: var(--font-display), cursive;
   font-size: clamp(2.5rem, 4vw, 4rem);
   line-height: 1;
+}
+
+.route-transition {
+  animation: route-enter var(--motion-duration-standard) var(--motion-ease-standard);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--motion-duration-section) var(--motion-ease-standard),
+    transform var(--motion-duration-section) var(--motion-ease-standard);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.motion-image-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.motion-image {
+  opacity: 0;
+  transition: opacity 320ms var(--motion-ease-standard);
+}
+
+.motion-image.is-loaded {
+  opacity: 1;
+}
+
+.motion-image-skeleton {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      110deg,
+      rgba(255, 255, 255, 0) 20%,
+      rgba(255, 255, 255, 0.72) 40%,
+      rgba(255, 255, 255, 0) 60%
+    ),
+    linear-gradient(180deg, #fff4ee 0%, #f9ece6 100%);
+  background-size: 220% 100%, 100% 100%;
+  animation: shimmer 1.25s linear infinite;
+  transition: opacity 220ms var(--motion-ease-standard);
+}
+
+.motion-image-skeleton.is-hidden {
+  opacity: 0;
+}
+
+.button-spinner {
+  display: inline-block;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 999px;
+  border: 2px solid rgba(91, 49, 45, 0.18);
+  border-top-color: #5b312d;
+  animation: spin 900ms linear infinite;
+}
+
+.cart-toast {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 80;
+  max-width: min(22rem, calc(100vw - 2rem));
+  border: 1px solid rgba(239, 207, 191, 0.8);
+  background: rgba(255, 250, 247, 0.98);
+  color: #5b312d;
+  border-radius: 1.2rem;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+  transform: translateY(18px);
+  opacity: 0;
+  transition:
+    transform var(--motion-duration-standard) var(--motion-ease-standard),
+    opacity var(--motion-duration-standard) var(--motion-ease-standard);
+}
+
+.cart-toast.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.cart-flight {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 40px;
+  width: 40px;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 245, 239, 0.96);
+  box-shadow: 0 14px 28px rgba(226, 135, 121, 0.24);
+  background: linear-gradient(135deg, #f7c9b0 0%, #e89a8f 100%);
+  transform: translate3d(var(--flight-x), var(--flight-y), 0) scale(0.95);
+  animation: cart-flight 520ms var(--motion-ease-standard) forwards;
+  will-change: transform, opacity;
+}
+
+.cart-bounce {
+  animation: cart-bounce 420ms var(--motion-ease-spring);
+}
+
+.count-pop {
+  animation: count-pop 280ms var(--motion-ease-spring);
+}
+
+.price-flash {
+  animation: price-flash 340ms var(--motion-ease-standard);
+}
+
+.collapse-out {
+  animation: collapse-out 240ms var(--motion-ease-exit) forwards;
+  overflow: hidden;
+}
+
+.field-shake {
+  animation: field-shake 320ms var(--motion-ease-standard);
+}
+
+.success-pop {
+  animation: success-pop 420ms var(--motion-ease-spring);
+}
+
+.floating-sparkle {
+  animation: sparkle 2.2s ease-in-out infinite;
+}
+
+.hero-stagger {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: hero-rise 460ms var(--motion-ease-standard) forwards;
+  animation-delay: var(--stagger-delay, 0ms);
+}
+
+.quick-action {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity var(--motion-duration-micro) var(--motion-ease-standard),
+    transform var(--motion-duration-micro) var(--motion-ease-standard);
+}
+
+.group:hover .quick-action,
+.group:focus-within .quick-action {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gallery-image-enter {
+  animation: image-fade 320ms var(--motion-ease-standard);
+}
+
+@keyframes route-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0, 0 0;
+  }
+  to {
+    background-position: -20% 0, 0 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cart-flight {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--flight-x), var(--flight-y), 0) scale(0.92);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.92;
+    transform: translate3d(
+        calc(var(--flight-x) + var(--flight-dx)),
+        calc(var(--flight-y) + var(--flight-dy) - 44px),
+        0
+      )
+      scale(0.32);
+  }
+}
+
+@keyframes cart-bounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.12);
+  }
+  65% {
+    transform: scale(0.96);
+  }
+}
+
+@keyframes count-pop {
+  0% {
+    transform: scale(0.8);
+  }
+  60% {
+    transform: scale(1.14);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes price-flash {
+  0% {
+    background: rgba(247, 201, 176, 0.72);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+@keyframes collapse-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+    max-height: 320px;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+  }
+}
+
+@keyframes field-shake {
+  20%,
+  60% {
+    transform: translateX(-5px);
+  }
+  40%,
+  80% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes success-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    transform: translateY(0) scale(0.92);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateY(-5px) scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes image-fade {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal,
+  .hero-stagger,
+  .quick-action,
+  .cart-toast,
+  .route-transition {
+    transform: none !important;
+  }
 }

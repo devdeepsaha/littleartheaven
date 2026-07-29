@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { MotionImage } from "@/components/ui/motion-image";
 
 export function CategoryCard({
   slug,
@@ -17,15 +17,17 @@ export function CategoryCard({
   return (
     <Link
       href={`/shop?category=${slug}`}
-      className="group flex flex-col items-center gap-3 rounded-[1.35rem] border border-white/70 bg-white px-3 py-3 text-center shadow-[0_14px_35px_rgba(15,23,42,0.07)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(15,23,42,0.1)] sm:flex-row sm:items-center sm:gap-4 sm:px-4 sm:py-4 sm:text-left"
+      className="group flex flex-col items-center gap-3 rounded-[1.35rem] border border-white/70 bg-white px-3 py-3 text-center shadow-[0_14px_35px_rgba(15,23,42,0.07)] transition duration-200 ease-[var(--motion-ease-standard)] hover:-translate-y-1 hover:scale-[1.02] hover:shadow-[0_20px_44px_rgba(15,23,42,0.1)] sm:flex-row sm:items-center sm:gap-4 sm:px-4 sm:py-4 sm:text-left"
     >
       <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full ring-4 ring-[#fff4ee] sm:h-20 sm:w-20">
-        <Image
+        {/* Keeping the scale on the image wrapper preserves the soft tile lift without distorting text. */}
+        <MotionImage
           src={image}
           alt={name}
           fill
           sizes="(max-width: 640px) 64px, 80px"
-          className="object-cover transition duration-500 group-hover:scale-105"
+          wrapperClassName="h-full w-full"
+          className="object-cover transition duration-300 group-hover:scale-[1.04]"
         />
       </div>
       <div className="min-w-0 flex-1">
