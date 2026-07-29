@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import { business } from "@/data/site";
 import { CartCount } from "@/components/cart-count";
+import { MobileNavDrawer } from "@/components/mobile-nav-drawer";
 
 export async function SiteHeader() {
   return (
@@ -79,9 +80,6 @@ export async function SiteHeader() {
                 className="rounded-full border border-sky-100"
               />
               <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
-                  Creative Studio
-                </p>
                 <h1 className="truncate font-[family-name:var(--font-display)] text-xl text-slate-900">
                   {business.name}
                 </h1>
@@ -98,29 +96,7 @@ export async function SiteHeader() {
                 <CartCount />
               </Link>
 
-              <details className="group relative">
-                <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-[#edd6c8] bg-white text-slate-800 shadow-sm transition hover:bg-[#fff7f2]">
-                  <span className="sr-only">Open menu</span>
-                  <div className="flex flex-col gap-1">
-                    <span className="block h-0.5 w-4 rounded-full bg-current" />
-                    <span className="block h-0.5 w-4 rounded-full bg-current" />
-                    <span className="block h-0.5 w-4 rounded-full bg-current" />
-                  </div>
-                </summary>
-                <div className="absolute right-0 top-[calc(100%+0.75rem)] z-20 w-60 rounded-[1.5rem] border border-[#f0e3d8] bg-white p-3 shadow-[0_18px_50px_rgba(15,23,42,0.14)]">
-                  <nav className="flex flex-col gap-1 text-sm font-semibold text-slate-700">
-                    <Link href="/" className="rounded-2xl px-4 py-3 transition hover:bg-slate-50">
-                      Home
-                    </Link>
-                    <Link
-                      href="/shop"
-                      className="rounded-2xl px-4 py-3 transition hover:bg-slate-50"
-                    >
-                      Shop
-                    </Link>
-                  </nav>
-                </div>
-              </details>
+              <MobileNavDrawer logo={business.logo} brandName={business.name} />
             </div>
           </div>
         </div>

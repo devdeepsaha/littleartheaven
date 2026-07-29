@@ -20,6 +20,7 @@ export function SiteFooter() {
             <Link href="/shop">Shop</Link>
             <Link href="/terms-and-conditions">Terms and Conditions</Link>
             <Link href="/privacy-policy">Privacy Policy</Link>
+            <Link href="/refund-policy">Refund Policy</Link>
             <Link href="/help-and-support">Help and Support</Link>
           </div>
         </div>
