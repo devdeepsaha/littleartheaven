@@ -62,7 +62,7 @@ export function AddToCartButton({
         {phase === "loading" ? (
           <ButtonSpinner />
         ) : phase === "success" ? (
-          <span className="success-pop">✓ Added</span>
+          <span className="success-pop">Added</span>
         ) : (
           "Add"
         )}
