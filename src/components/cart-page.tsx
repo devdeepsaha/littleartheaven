@@ -1,0 +1,129 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useMemo } from "react";
+
+import { useCart } from "@/components/providers/cart-provider";
+import { formatPrice } from "@/lib/utils";
+import { ProductWithCategory } from "@/types";
+
+export function CartPage({ products }: { products: ProductWithCategory[] }) {
+  const { items, updateItem, removeItem } = useCart();
+
+  const lines = useMemo(
+    () =>
+      items
+        .map((item) => {
+          const product = products.find((entry) => entry.slug === item.slug);
+          if (!product) {
+            return null;
+          }
+
+          return {
+            ...product,
+            quantity: item.quantity,
+            total: product.price * item.quantity,
+          };
+        })
+        .filter(Boolean),
+    [items, products],
+  ) as Array<ProductWithCategory & { quantity: number; total: number }>;
+
+  const total = lines.reduce((sum, item) => sum + item.total, 0);
+
+  if (!lines.length) {
+    return (
+      <div className="rounded-[1.7rem] border border-dashed border-slate-300 bg-white/75 p-8 text-center">
+        <h1 className="font-[family-name:var(--font-display)] text-3xl text-slate-900">
+          Your cart is empty
+        </h1>
+        <p className="mt-3 text-sm leading-6 text-slate-600">
+          Pick a few handmade favorites and come back here when you&apos;re ready to order.
+        </p>
+        <Link
+          href="/shop"
+          className="mt-6 inline-flex rounded-full bg-[linear-gradient(135deg,#f7c9b0_0%,#e89a8f_100%)] px-5 py-3 text-sm font-semibold text-[#5b312d]"
+        >
+          Continue shopping
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-5 lg:grid-cols-[1fr_290px]">
+      <div className="space-y-3">
+        {lines.map((item) => (
+          <article
+            key={item.slug}
+            className="grid gap-4 rounded-[1.6rem] border border-white/70 bg-white p-4 shadow-[0_16px_40px_rgba(15,23,42,0.08)] md:grid-cols-[96px_1fr_auto]"
+          >
+            <div className="relative aspect-square overflow-hidden rounded-[1rem]">
+              <Image
+                src={item.images[0]}
+                alt={item.name}
+                fill
+                sizes="96px"
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.22em] text-slate-500">
+                {item.category.name}
+              </p>
+              <h2 className="mt-1.5 text-[1.7rem] leading-tight font-semibold text-slate-900">
+                {item.name}
+              </h2>
+              <p className="mt-2 text-sm leading-5 text-slate-600">{item.shortDescription}</p>
+              <button
+                type="button"
+                onClick={() => removeItem(item.slug)}
+                className="mt-4 text-sm font-semibold text-rose-600"
+              >
+                Remove
+              </button>
+            </div>
+            <div className="flex flex-col items-start gap-3 md:items-end">
+              <span className="text-base font-semibold text-slate-900">
+                {formatPrice(item.total)}
+              </span>
+              <div className="flex items-center gap-1.5 rounded-full border border-[#eadfd6] bg-[#fffaf7] px-1.5 py-1">
+                <button
+                  type="button"
+                  onClick={() => updateItem(item.slug, item.quantity - 1)}
+                  className="h-9 w-9 rounded-full bg-[#f6efe9] text-base text-[#7c5a52]"
+                >
+                  -
+                </button>
+                <span className="min-w-8 text-center text-sm font-semibold">{item.quantity}</span>
+                <button
+                  type="button"
+                  onClick={() => updateItem(item.slug, item.quantity + 1)}
+                  className="h-9 w-9 rounded-full bg-[#e89a8f] text-base text-white"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <aside className="rounded-[1.8rem] border border-white/70 bg-white p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+        <h2 className="font-[family-name:var(--font-display)] text-[2rem] text-slate-900">
+          Summary
+        </h2>
+        <div className="mt-5 flex items-center justify-between text-base font-semibold text-slate-900">
+          <span>Total</span>
+          <span>{formatPrice(total)}</span>
+        </div>
+        <Link
+          href="/checkout"
+          className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#f7c9b0_0%,#e89a8f_100%)] px-5 py-3 text-sm font-semibold text-[#5b312d] shadow-[0_12px_30px_rgba(213,147,124,0.24)]"
+        >
+          Continue to checkout
+        </Link>
+      </aside>
+    </div>
+  );
+}
