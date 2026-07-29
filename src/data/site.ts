@@ -1,4 +1,7 @@
 import { Category, Product } from "@/types";
+import { resolveStoredAssetUrl } from "@/lib/storage";
+
+const asset = (path: string) => resolveStoredAssetUrl(path);
 
 export const business = {
   name: "Little Art Heaven",
@@ -10,7 +13,7 @@ export const business = {
     "Srijita turns photos, favorite characters, and heartfelt moments into keepsakes people want to hold onto. The studio blends handcrafted details with cheerful design, making each order feel like a one-of-a-kind gift.",
   email: process.env.BUSINESS_EMAIL || "hello@littleartheaven.in",
   whatsappNumber: process.env.BUSINESS_WHATSAPP_NUMBER || "919999999999",
-  logo: "/assets/brand/logo.jpg",
+  logo: asset("/assets/brand/logo.jpg"),
   founderImage: null as string | null,
 };
 
@@ -20,56 +23,56 @@ export const categories: Category[] = [
     slug: "frames",
     name: "Custom Frames",
     description: "Layered memory boards, collage frames, and heartfelt wall gifts.",
-    image: "/assets/products/custom-frame.jpeg",
+    image: asset("/assets/products/custom-frame.jpeg"),
   },
   {
     id: "lockets",
     slug: "lockets",
     name: "Lockets",
     description: "Tiny keepsakes made to carry memories close every day.",
-    image: "/assets/products/custom-locket.jpeg",
+    image: asset("/assets/products/custom-locket.jpeg"),
   },
   {
     id: "earrings",
     slug: "earrings",
     name: "Earrings",
     description: "Cute handmade earrings for gifting or daily styling.",
-    image: "/assets/products/custom-ear-rings.jpeg",
+    image: asset("/assets/products/custom-ear-rings.jpeg"),
   },
   {
     id: "keyrings",
     slug: "keyrings",
     name: "Keyrings",
     description: "Pocket-size custom accessories with personality.",
-    image: "/assets/products/custom-keyring.jpeg",
+    image: asset("/assets/products/custom-keyring.jpeg"),
   },
   {
     id: "phone-cases",
     slug: "phone-cases",
     name: "Phone Cases",
     description: "Custom painted and theme-based covers that stand out.",
-    image: "/assets/products/starry-night-custom-phone-case.jpeg",
+    image: asset("/assets/products/starry-night-custom-phone-case.jpeg"),
   },
   {
     id: "bags",
     slug: "bags",
     name: "Painted Bags",
     description: "Hand-painted bags with art-inspired and pop-culture themes.",
-    image: "/assets/products/starry-night-bag.jpeg",
+    image: asset("/assets/products/starry-night-bag.jpeg"),
   },
   {
     id: "clay-art",
     slug: "clay-art",
     name: "Clay Art",
     description: "Character-inspired clay miniatures and decorative pieces.",
-    image: "/assets/products/clay-captain-america.jpeg",
+    image: asset("/assets/products/clay-captain-america.jpeg"),
   },
   {
     id: "gift-custom",
     slug: "gift-custom",
     name: "Gift Specials",
     description: "Bouquets, moons, and custom gift ideas for special occasions.",
-    image: "/assets/products/flower-bouquet.jpeg",
+    image: asset("/assets/products/flower-bouquet.jpeg"),
   },
 ];
 
@@ -84,12 +87,12 @@ export const seededProducts: Product[] = [
       "A collage-style framed gift designed for teacher appreciation and milestone moments. Ideal for personalized photos, notes, and layered scrapbook textures.",
     shortDescription: "A heartfelt collage frame for milestone gifting.",
     images: [
-      "/assets/products/custom-frame.jpeg",
-      "/assets/products/custom-frame-2.jpeg",
-      "/assets/products/custom-frame-3.jpeg",
-      "/assets/products/custom-frame-4.jpeg",
-      "/assets/products/custom-frame-5.jpeg",
-      "/assets/products/custom-frame-6.jpeg",
+      asset("/assets/products/custom-frame.jpeg"),
+      asset("/assets/products/custom-frame-2.jpeg"),
+      asset("/assets/products/custom-frame-3.jpeg"),
+      asset("/assets/products/custom-frame-4.jpeg"),
+      asset("/assets/products/custom-frame-5.jpeg"),
+      asset("/assets/products/custom-frame-6.jpeg"),
     ],
     featured: true,
     published: true,
@@ -106,10 +109,10 @@ export const seededProducts: Product[] = [
       "Handmade earrings with a playful, colorful finish. Great for gifting, festive styling, and small custom variations.",
     shortDescription: "Colorful handmade earrings with a personal touch.",
     images: [
-      "/assets/products/custom-ear-rings.jpeg",
-      "/assets/products/custom-ear-rings-2.jpeg",
-      "/assets/products/custom-ear-rings-3.jpeg",
-      "/assets/products/custom-ear-rings-4.jpeg",
+      asset("/assets/products/custom-ear-rings.jpeg"),
+      asset("/assets/products/custom-ear-rings-2.jpeg"),
+      asset("/assets/products/custom-ear-rings-3.jpeg"),
+      asset("/assets/products/custom-ear-rings-4.jpeg"),
     ],
     featured: true,
     published: true,
@@ -126,8 +129,8 @@ export const seededProducts: Product[] = [
       "A compact keepsake keyring that can be personalized for names, memories, and quick gift moments.",
     shortDescription: "A pocket-size keepsake for everyday gifting.",
     images: [
-      "/assets/products/custom-keyring.jpeg",
-      "/assets/products/custom-keyring-2.jpeg",
+      asset("/assets/products/custom-keyring.jpeg"),
+      asset("/assets/products/custom-keyring-2.jpeg"),
     ],
     featured: false,
     published: true,
@@ -144,10 +147,10 @@ export const seededProducts: Product[] = [
       "A personalized locket-style keepsake made to preserve names, memories, or mini themes in a thoughtful format.",
     shortDescription: "A tiny keepsake designed around meaningful memories.",
     images: [
-      "/assets/products/custom-locket.jpeg",
-      "/assets/products/custom-locket-2.jpeg",
-      "/assets/products/custom-locket-3.jpeg",
-      "/assets/products/custom-locket-4.jpeg",
+      asset("/assets/products/custom-locket.jpeg"),
+      asset("/assets/products/custom-locket-2.jpeg"),
+      asset("/assets/products/custom-locket-3.jpeg"),
+      asset("/assets/products/custom-locket-4.jpeg"),
     ],
     featured: true,
     published: true,
@@ -163,7 +166,7 @@ export const seededProducts: Product[] = [
     description:
       "A set of two matching lockets for best friends, siblings, or couples. Designed for gifting in pairs.",
     shortDescription: "A matching keepsake set for two.",
-    images: ["/assets/products/custom-locket-set-of-2.jpeg"],
+    images: [asset("/assets/products/custom-locket-set-of-2.jpeg")],
     featured: false,
     published: true,
     available: true,
@@ -178,7 +181,7 @@ export const seededProducts: Product[] = [
     description:
       "A custom phone case with cool ocean-inspired tones and hand-finished artwork for a standout look.",
     shortDescription: "An artful hand-finished case with calm blue tones.",
-    images: ["/assets/products/custom-ocean-blue-phone-case.jpeg"],
+    images: [asset("/assets/products/custom-ocean-blue-phone-case.jpeg")],
     featured: false,
     published: true,
     available: true,
@@ -193,7 +196,7 @@ export const seededProducts: Product[] = [
     description:
       "A painted phone cover blending starry-night textures with a custom illustrated finish.",
     shortDescription: "A hand-painted phone case with artistic drama.",
-    images: ["/assets/products/starry-night-custom-phone-case.jpeg"],
+    images: [asset("/assets/products/starry-night-custom-phone-case.jpeg")],
     featured: true,
     published: true,
     available: true,
@@ -208,7 +211,7 @@ export const seededProducts: Product[] = [
     description:
       "A backpack transformed with bold hand-painted textures and playful character energy. Perfect for art lovers and statement gifting.",
     shortDescription: "A statement painted bag full of color and character.",
-    images: ["/assets/products/starry-night-bag.jpeg"],
+    images: [asset("/assets/products/starry-night-bag.jpeg")],
     featured: true,
     published: true,
     available: true,
@@ -223,7 +226,7 @@ export const seededProducts: Product[] = [
     description:
       "A character-inspired clay art piece made for superhero fans and fun desk decor gifting.",
     shortDescription: "A bold superhero clay piece for collectors and fans.",
-    images: ["/assets/products/clay-captain-america.jpeg"],
+    images: [asset("/assets/products/clay-captain-america.jpeg")],
     featured: false,
     published: true,
     available: true,
@@ -238,7 +241,7 @@ export const seededProducts: Product[] = [
     description:
       "A playful pop-culture clay piece with lots of personality, great for themed gifting.",
     shortDescription: "A fun themed clay piece with comic-book energy.",
-    images: ["/assets/products/deadpool-clay.jpeg"],
+    images: [asset("/assets/products/deadpool-clay.jpeg")],
     featured: false,
     published: true,
     available: true,
@@ -253,7 +256,7 @@ export const seededProducts: Product[] = [
     description:
       "A bright handmade bouquet designed for birthdays, thank-yous, and surprise gifts that last longer than fresh flowers.",
     shortDescription: "A cheerful bouquet crafted for joyful gifting.",
-    images: ["/assets/products/flower-bouquet.jpeg"],
+    images: [asset("/assets/products/flower-bouquet.jpeg")],
     featured: true,
     published: true,
     available: true,
@@ -268,7 +271,7 @@ export const seededProducts: Product[] = [
     description:
       "A dreamy custom moon-themed keepsake for birthdays, room decor, and thoughtful gifting.",
     shortDescription: "A dreamy custom keepsake with a soft celestial feel.",
-    images: ["/assets/products/custom-moon.jpeg"],
+    images: [asset("/assets/products/custom-moon.jpeg")],
     featured: false,
     published: true,
     available: true,

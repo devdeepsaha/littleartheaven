@@ -88,21 +88,6 @@ export async function SiteHeader() {
             </Link>
 
             <div className="flex items-center gap-2">
-              <nav className="flex items-center gap-1 rounded-full bg-[#fff7f2] px-1.5 py-1 text-xs font-semibold text-slate-700 shadow-[inset_0_0_0_1px_rgba(239,207,191,0.7)]">
-                <Link
-                  href="/"
-                  className="rounded-full px-3 py-2 transition hover:bg-white hover:text-slate-900"
-                >
-                  Home
-                </Link>
-                <Link
-                  href="/shop"
-                  className="rounded-full px-3 py-2 transition hover:bg-white hover:text-slate-900"
-                >
-                  Shop
-                </Link>
-              </nav>
-
               <Link
                 href="/cart"
                 className="inline-flex items-center gap-2 rounded-full border border-[#efcfbf] bg-[linear-gradient(135deg,#f7c9b0_0%,#e89a8f_100%)] px-3 py-2 text-xs font-semibold text-[#5b312d] shadow-[0_12px_30px_rgba(213,147,124,0.22)]"
@@ -110,6 +95,30 @@ export async function SiteHeader() {
                 <span>Cart</span>
                 <CartCount />
               </Link>
+
+              <details className="group relative">
+                <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-[#edd6c8] bg-white text-slate-800 shadow-sm transition hover:bg-[#fff7f2]">
+                  <span className="sr-only">Open menu</span>
+                  <div className="flex flex-col gap-1">
+                    <span className="block h-0.5 w-4 rounded-full bg-current" />
+                    <span className="block h-0.5 w-4 rounded-full bg-current" />
+                    <span className="block h-0.5 w-4 rounded-full bg-current" />
+                  </div>
+                </summary>
+                <div className="absolute right-0 top-[calc(100%+0.75rem)] z-20 w-60 rounded-[1.5rem] border border-[#f0e3d8] bg-white p-3 shadow-[0_18px_50px_rgba(15,23,42,0.14)]">
+                  <nav className="flex flex-col gap-1 text-sm font-semibold text-slate-700">
+                    <Link href="/" className="rounded-2xl px-4 py-3 transition hover:bg-slate-50">
+                      Home
+                    </Link>
+                    <Link
+                      href="/shop"
+                      className="rounded-2xl px-4 py-3 transition hover:bg-slate-50"
+                    >
+                      Shop
+                    </Link>
+                  </nav>
+                </div>
+              </details>
             </div>
           </div>
         </div>
