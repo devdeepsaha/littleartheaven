@@ -14,7 +14,7 @@ export const business = {
   email: process.env.BUSINESS_EMAIL || "hello@littleartheaven.in",
   whatsappNumber: process.env.BUSINESS_WHATSAPP_NUMBER || "919999999999",
   logo: asset("/assets/brand/logo.jpg"),
-  founderImage: null as string | null,
+  founderImage: asset("/assets/brand/founder-photo.jpg"),
 };
 
 export const categories: Category[] = [

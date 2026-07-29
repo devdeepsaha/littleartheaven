@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { FounderPhotoPanel } from "@/components/admin/founder-photo-panel";
 import { LogoutButton } from "@/components/admin/logout-button";
 import { requireAdminSession } from "@/lib/admin-auth";
 import { getAllOrders } from "@/lib/orders";
@@ -48,6 +49,10 @@ export default async function AdminHome() {
             <p className="mt-3 text-4xl font-semibold text-slate-900">{item.value}</p>
           </div>
         ))}
+      </div>
+
+      <div className="mt-8">
+        <FounderPhotoPanel />
       </div>
 
       <div className="mt-8 grid gap-6 md:grid-cols-2">

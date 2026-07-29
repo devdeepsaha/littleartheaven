@@ -23,6 +23,9 @@ export async function POST(request: Request) {
 
     const formData = await request.formData();
     const file = formData.get("file");
+    const folder = String(formData.get("folder") || "products").trim() || "products";
+    const fileName = String(formData.get("fileName") || "").trim();
+    const shouldUpsert = String(formData.get("upsert") || "false") === "true";
 
     if (!(file instanceof File)) {
       return NextResponse.json({ error: "No file was uploaded." }, { status: 400 });
@@ -33,7 +36,11 @@ export async function POST(request: Request) {
     }
 
     const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-    const filePath = `products/${Date.now()}-${randomUUID()}.${ext}`;
+    const normalizedFolder = folder.replace(/^\/+|\/+$/g, "") || "products";
+    const safeFileName = fileName
+      ? `${fileName.replace(/[^a-zA-Z0-9-_]/g, "-")}.${ext}`
+      : `${Date.now()}-${randomUUID()}.${ext}`;
+    const filePath = `${normalizedFolder}/${safeFileName}`;
     const supabase = await createSupabaseAdminClient();
 
     const { data: bucketData } = await supabase.storage.getBucket(productImagesBucket);
@@ -50,7 +57,7 @@ export async function POST(request: Request) {
       .from(productImagesBucket)
       .upload(filePath, bytes, {
         contentType: file.type,
-        upsert: false,
+        upsert: shouldUpsert,
       });
 
     if (error) {
