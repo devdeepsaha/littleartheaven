@@ -68,7 +68,7 @@ export function ProductDetailView({ product }: { product: ProductWithCategory })
                   <button
                     type="button"
                     onClick={() => setLightboxOpen(true)}
-                    className="group relative block min-h-[280px] w-full overflow-hidden rounded-[1.55rem] bg-[#f8fafc] text-left sm:min-h-[420px] xl:min-h-[520px]"
+                    className="group relative block aspect-[4/5] w-full overflow-hidden rounded-[1.55rem] bg-[#f8fafc] text-left sm:aspect-[5/4] xl:aspect-[4/5]"
                   >
                     <MotionImage
                       key={activeImage}
@@ -76,6 +76,7 @@ export function ProductDetailView({ product }: { product: ProductWithCategory })
                       alt={product.name}
                       fill
                       sizes="(max-width: 1280px) 100vw, 48vw"
+                      loading="eager"
                       quality={78}
                       wrapperClassName="h-full w-full"
                       className="gallery-image-enter object-cover transition duration-500 group-hover:scale-[1.02]"
