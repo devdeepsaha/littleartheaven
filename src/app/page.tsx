@@ -8,12 +8,35 @@ import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/ui/reveal";
 import { business } from "@/data/site";
 import { getCategories, getFeaturedProducts } from "@/lib/catalog";
+import { getSocialImageUrl, siteTitle, siteUrl } from "@/lib/seo";
+
+const homeTitle = "Little Art Heaven by Srijita Nandy";
+const homeDescription = `${business.name} is a handmade gifting studio by ${business.founderName} offering custom frames, lockets, clay art, painted bags, and thoughtful keepsakes.`;
 
 export const metadata: Metadata = {
-  title: "Little Art Heaven by Srijita Nandy",
-  description: `${business.name} is a handmade gifting studio by ${business.founderName} offering custom frames, lockets, clay art, painted bags, and thoughtful keepsakes.`,
+  title: homeTitle,
+  description: homeDescription,
   alternates: {
-    canonical: "/",
+    canonical: siteUrl,
+  },
+  openGraph: {
+    title: homeTitle,
+    description: homeDescription,
+    url: siteUrl,
+    siteName: siteTitle,
+    type: "website",
+    images: [
+      {
+        url: getSocialImageUrl(),
+        alt: "Little Art Heaven social banner",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: homeTitle,
+    description: homeDescription,
+    images: [getSocialImageUrl()],
   },
 };
 
