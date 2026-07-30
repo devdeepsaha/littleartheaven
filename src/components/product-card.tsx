@@ -6,6 +6,9 @@ import { AddToCartButton } from "@/components/add-to-cart-button";
 import { MotionImage } from "@/components/ui/motion-image";
 
 export function ProductCard({ product }: { product: ProductWithCategory }) {
+  const defaultSelectionLabel =
+    product.images.length > 1 ? `${product.name} Style 01` : product.name;
+
   return (
     <article className="group overflow-hidden rounded-[1.35rem] border border-white/70 bg-white shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition duration-200 ease-[var(--motion-ease-standard)] hover:-translate-y-0.5 hover:shadow-[0_18px_44px_rgba(15,23,42,0.12)] sm:rounded-[1.5rem] sm:shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
       <Link href={`/product/${product.slug}`} className="block">
@@ -66,7 +69,7 @@ export function ProductCard({ product }: { product: ProductWithCategory }) {
             slug={product.slug}
             disabled={!product.available}
             imageUrl={product.images[0]}
-            label={product.name}
+            label={defaultSelectionLabel}
           />
         </div>
       </div>

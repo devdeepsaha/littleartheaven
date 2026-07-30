@@ -21,10 +21,14 @@ export function AddToCartButton({
 }) {
   const { items, addItem, updateItem } = useCart();
   const [phase, setPhase] = useState<"idle" | "loading" | "success">("idle");
+  const lineId = useMemo(
+    () => [slug, label || "", imageUrl || ""].join("::"),
+    [slug, label, imageUrl],
+  );
 
   const quantity = useMemo(
-    () => items.find((item) => item.slug === slug)?.quantity || 0,
-    [items, slug],
+    () => items.find((item) => item.lineId === lineId)?.quantity || 0,
+    [items, lineId],
   );
 
   async function handleAdd(event: React.MouseEvent<HTMLButtonElement>) {
@@ -75,7 +79,7 @@ export function AddToCartButton({
       <div className="inline-flex items-center gap-2 rounded-full border border-[#eadfd6] bg-[#fffaf7] p-1.5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.7)]">
         <button
           type="button"
-          onClick={() => updateItem(slug, quantity - 1)}
+          onClick={() => updateItem(lineId, quantity - 1)}
           className="flex h-8 w-8 items-center justify-center rounded-full border border-[#efe2d7] bg-white text-base font-semibold text-[#7c5a52] transition hover:bg-[#f8f1eb] sm:h-9 sm:w-9"
           aria-label="Decrease quantity"
         >
