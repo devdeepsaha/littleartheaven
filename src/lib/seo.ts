@@ -29,6 +29,7 @@ export const siteUrl = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
 export const siteTitle = "Little Art Heaven";
 export const siteDescription =
   "Little Art Heaven by Srijita Nandy offers handmade gifts, custom frames, lockets, clay art, painted bags, and thoughtful keepsakes.";
+const socialImageVersion = "v2";
 
 export function toAbsoluteUrl(url: string) {
   if (!url) {
@@ -43,5 +44,7 @@ export function toAbsoluteUrl(url: string) {
 }
 
 export function getSocialImageUrl() {
-  return toAbsoluteUrl(business.socialImage || business.logo);
+  const url = new URL(toAbsoluteUrl(business.socialImage || business.logo));
+  url.searchParams.set("v", socialImageVersion);
+  return url.toString();
 }
