@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { getCategories, getProducts } from "@/lib/catalog";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://littleartheaven.vercel.app";
+import { siteUrl } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [products, categories] = await Promise.all([getProducts(), getCategories()]);
