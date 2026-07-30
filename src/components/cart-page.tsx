@@ -24,13 +24,24 @@ export function CartPage({ products }: { products: ProductWithCategory[] }) {
 
           return {
             ...product,
+            lineId: item.lineId,
+            selectedImage: item.imageUrl || product.images[0],
+            selectedLabel: item.label || product.name,
             quantity: item.quantity,
             total: product.price * item.quantity,
           };
         })
         .filter(Boolean),
     [items, products],
-  ) as Array<ProductWithCategory & { quantity: number; total: number }>;
+  ) as Array<
+    ProductWithCategory & {
+      lineId: string;
+      selectedImage: string;
+      selectedLabel: string;
+      quantity: number;
+      total: number;
+    }
+  >;
 
   const total = lines.reduce((sum, item) => sum + item.total, 0);
 
@@ -66,13 +77,13 @@ export function CartPage({ products }: { products: ProductWithCategory[] }) {
       <div className="space-y-3">
         {lines.map((item) => (
           <article
-            key={item.slug}
-            className={`grid gap-4 rounded-[1.6rem] border border-white/70 bg-white p-4 shadow-[0_16px_40px_rgba(15,23,42,0.08)] md:grid-cols-[96px_1fr_auto] ${removingSlug === item.slug ? "collapse-out" : ""}`}
+            key={item.lineId}
+            className={`grid gap-4 rounded-[1.6rem] border border-white/70 bg-white p-4 shadow-[0_16px_40px_rgba(15,23,42,0.08)] md:grid-cols-[96px_1fr_auto] ${removingSlug === item.lineId ? "collapse-out" : ""}`}
           >
             <div className="relative aspect-square overflow-hidden rounded-[1rem]">
               <MotionImage
-                src={item.images[0]}
-                alt={item.name}
+                src={item.selectedImage}
+                alt={item.selectedLabel}
                 fill
                 sizes="96px"
                 wrapperClassName="h-full w-full"
@@ -86,12 +97,17 @@ export function CartPage({ products }: { products: ProductWithCategory[] }) {
               <h2 className="mt-1.5 text-[1.7rem] leading-tight font-semibold text-slate-900">
                 {item.name}
               </h2>
+              {item.selectedLabel !== item.name ? (
+                <span className="mt-2 inline-flex rounded-full border border-[#efdfd4] bg-[#fff8f4] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#b46f5f]">
+                  {item.selectedLabel.replace(`${item.name} `, "")}
+                </span>
+              ) : null}
               <p className="mt-2 text-sm leading-5 text-slate-600">{item.shortDescription}</p>
               <button
                 type="button"
                 onClick={() => {
-                  setRemovingSlug(item.slug);
-                  window.setTimeout(() => removeItem(item.slug), 220);
+                  setRemovingSlug(item.lineId);
+                  window.setTimeout(() => removeItem(item.lineId), 220);
                 }}
                 className="mt-4 text-sm font-semibold text-rose-600"
               >
@@ -100,7 +116,7 @@ export function CartPage({ products }: { products: ProductWithCategory[] }) {
             </div>
             <div className="flex flex-col items-start gap-3 md:items-end">
               <span
-                className={`rounded-full px-2 py-1 text-base font-semibold text-slate-900 ${flashSlug === item.slug ? "price-flash" : ""}`}
+                className={`rounded-full px-2 py-1 text-base font-semibold text-slate-900 ${flashSlug === item.lineId ? "price-flash" : ""}`}
               >
                 {formatPrice(item.total)}
               </span>
@@ -108,8 +124,8 @@ export function CartPage({ products }: { products: ProductWithCategory[] }) {
                 <button
                   type="button"
                   onClick={() => {
-                    setFlashSlug(item.slug);
-                    updateItem(item.slug, item.quantity - 1);
+                    setFlashSlug(item.lineId);
+                    updateItem(item.lineId, item.quantity - 1);
                     window.setTimeout(() => setFlashSlug(null), 340);
                   }}
                   className="h-9 w-9 rounded-full bg-[#f6efe9] text-base text-[#7c5a52]"
@@ -120,8 +136,8 @@ export function CartPage({ products }: { products: ProductWithCategory[] }) {
                 <button
                   type="button"
                   onClick={() => {
-                    setFlashSlug(item.slug);
-                    updateItem(item.slug, item.quantity + 1);
+                    setFlashSlug(item.lineId);
+                    updateItem(item.lineId, item.quantity + 1);
                     window.setTimeout(() => setFlashSlug(null), 340);
                   }}
                   className="h-9 w-9 rounded-full bg-[#e89a8f] text-base text-white"

@@ -39,13 +39,22 @@ export function CheckoutForm({ products }: { products: ProductWithCategory[] }) 
 
           return {
             ...product,
+            lineId: item.lineId,
+            selectedLabel: item.label || product.name,
             quantity: item.quantity,
             lineTotal: item.quantity * product.price,
           };
         })
         .filter(Boolean),
     [items, products],
-  ) as Array<ProductWithCategory & { quantity: number; lineTotal: number }>;
+  ) as Array<
+    ProductWithCategory & {
+      lineId: string;
+      selectedLabel: string;
+      quantity: number;
+      lineTotal: number;
+    }
+  >;
 
   const total = cartProducts.reduce((sum, item) => sum + item.lineTotal, 0);
 
@@ -79,8 +88,11 @@ export function CheckoutForm({ products }: { products: ProductWithCategory[] }) 
             address: String(formData.get("address") || ""),
             notes: String(formData.get("notes") || ""),
             items: items.map((item) => ({
+              lineId: item.lineId,
               slug: item.slug,
               quantity: item.quantity,
+              label: item.label,
+              imageUrl: item.imageUrl,
             })),
           };
 
@@ -235,9 +247,14 @@ export function CheckoutForm({ products }: { products: ProductWithCategory[] }) 
         </h2>
         <div className="mt-5 space-y-3">
           {cartProducts.map((item) => (
-            <div key={item.slug} className="flex items-start justify-between gap-4 border-b border-slate-100 pb-3">
+            <div key={item.lineId} className="flex items-start justify-between gap-4 border-b border-slate-100 pb-3">
               <div>
                 <p className="font-semibold text-slate-900">{item.name}</p>
+                {item.selectedLabel !== item.name ? (
+                  <p className="mt-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#b46f5f]">
+                    {item.selectedLabel.replace(`${item.name} `, "")}
+                  </p>
+                ) : null}
                 <p className="text-sm text-slate-500">Qty {item.quantity}</p>
               </div>
               <span className="font-semibold text-slate-900">

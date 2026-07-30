@@ -11,8 +11,11 @@ import {
 import { CartMotionLayer } from "@/components/ui/cart-motion-layer";
 
 type CartLine = {
+  lineId: string;
   slug: string;
   quantity: number;
+  imageUrl?: string;
+  label?: string;
 };
 
 type AddItemMeta = {
@@ -24,14 +27,34 @@ type AddItemMeta = {
 type CartContextValue = {
   items: CartLine[];
   addItem: (slug: string, meta?: AddItemMeta) => void;
-  updateItem: (slug: string, quantity: number) => void;
-  removeItem: (slug: string) => void;
+  updateItem: (lineId: string, quantity: number) => void;
+  removeItem: (lineId: string) => void;
   clearCart: () => void;
   cartPulseKey: number;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
 const storageKey = "little-art-heaven-cart";
+
+function createLineId(slug: string, meta?: AddItemMeta) {
+  return [slug, meta?.label || "", meta?.imageUrl || ""].join("::");
+}
+
+function normalizeCartLine(item: Partial<CartLine> & { slug: string; quantity: number }) {
+  const label = typeof item.label === "string" ? item.label : undefined;
+  const imageUrl = typeof item.imageUrl === "string" ? item.imageUrl : undefined;
+
+  return {
+    lineId:
+      typeof item.lineId === "string" && item.lineId.trim()
+        ? item.lineId
+        : createLineId(item.slug, { label, imageUrl }),
+    slug: item.slug,
+    quantity: item.quantity,
+    imageUrl,
+    label,
+  } satisfies CartLine;
+}
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartPulseKey, setCartPulseKey] = useState(0);
@@ -57,7 +80,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      return JSON.parse(raw) as CartLine[];
+      return (JSON.parse(raw) as Array<Partial<CartLine> & { slug: string; quantity: number }>)
+        .map(normalizeCartLine);
     } catch {
       return [];
     }
@@ -117,28 +141,38 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       cartPulseKey,
       addItem(slug, meta) {
         setItems((current) => {
-          const existing = current.find((item) => item.slug === slug);
+          const lineId = createLineId(slug, meta);
+          const existing = current.find((item) => item.lineId === lineId);
           if (existing) {
             return current.map((item) =>
-              item.slug === slug
+              item.lineId === lineId
                 ? { ...item, quantity: item.quantity + 1 }
                 : item,
             );
           }
 
-          return [...current, { slug, quantity: 1 }];
+          return [
+            ...current,
+            {
+              lineId,
+              slug,
+              quantity: 1,
+              imageUrl: meta?.imageUrl,
+              label: meta?.label,
+            },
+          ];
         });
         celebrateAdd(meta);
       },
-      updateItem(slug, quantity) {
+      updateItem(lineId, quantity) {
         setItems((current) =>
           current
-            .map((item) => (item.slug === slug ? { ...item, quantity } : item))
+            .map((item) => (item.lineId === lineId ? { ...item, quantity } : item))
             .filter((item) => item.quantity > 0),
         );
       },
-      removeItem(slug) {
-        setItems((current) => current.filter((item) => item.slug !== slug));
+      removeItem(lineId) {
+        setItems((current) => current.filter((item) => item.lineId !== lineId));
       },
       clearCart() {
         setItems([]);

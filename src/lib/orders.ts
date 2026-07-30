@@ -31,7 +31,7 @@ function calculateOrderItems(
       return {
         productId: product.id,
         slug: product.slug,
-        name: product.name,
+        name: item.label?.trim() || product.name,
         quantity: item.quantity,
         unitPrice: product.price,
         lineTotal: product.price * item.quantity,

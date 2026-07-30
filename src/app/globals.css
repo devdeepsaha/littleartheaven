@@ -71,8 +71,12 @@ select {
 }
 
 .motion-image-shell {
+  display: block;
+  height: 100%;
+  width: 100%;
   position: relative;
   isolation: isolate;
+  overflow: hidden;
 }
 
 .motion-image {

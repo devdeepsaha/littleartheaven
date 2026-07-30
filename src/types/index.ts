@@ -26,8 +26,11 @@ export type ProductWithCategory = Product & {
 };
 
 export type CartItemInput = {
+  lineId: string;
   slug: string;
   quantity: number;
+  label?: string;
+  imageUrl?: string;
 };
 
 export type OrderStatus =
