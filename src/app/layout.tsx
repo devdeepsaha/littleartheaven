@@ -56,12 +56,12 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: business.logo,
+        url: "/icon.jpg",
         type: "image/jpeg",
       },
     ],
-    shortcut: [business.logo],
-    apple: [business.logo],
+    shortcut: ["/icon.jpg"],
+    apple: ["/apple-icon.jpg"],
   },
   alternates: {
     canonical: "/",
