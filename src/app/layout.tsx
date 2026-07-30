@@ -24,6 +24,9 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://littleartheaven.ver
 const siteTitle = "Little Art Heaven";
 const siteDescription =
   "Little Art Heaven by Srijita Nandy offers handmade gifts, custom frames, lockets, clay art, painted bags, and thoughtful keepsakes.";
+const instagramUrl = `https://www.instagram.com/${business.instagramHandle}/`;
+const managedByInstagramUrl = `https://www.instagram.com/${business.managedByInstagramHandle}/`;
+const founderInstagramUrl = `https://www.instagram.com/${business.founderInstagramHandle}/`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -37,6 +40,11 @@ export const metadata: Metadata = {
     "Little Art Heaven",
     "Srijita Nandy",
     "Srijita",
+    "Srijita Nandy handmade gifts",
+    "Little Art Heaven Instagram",
+    "little_art_heavan",
+    "artistic_srijita_009",
+    "itz_srijita_008",
     "handmade gifts",
     "custom gifts",
     "custom frames",
@@ -48,6 +56,16 @@ export const metadata: Metadata = {
   authors: [{ name: business.founderName }],
   creator: business.founderName,
   publisher: siteTitle,
+  icons: {
+    icon: [
+      {
+        url: business.logo,
+        type: "image/jpeg",
+      },
+    ],
+    shortcut: [business.logo],
+    apple: [business.logo],
+  },
   alternates: {
     canonical: "/",
   },
@@ -63,12 +81,14 @@ export const metadata: Metadata = {
         alt: siteTitle,
       },
     ],
+    locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
     title: siteTitle,
     description: siteDescription,
     images: [business.logo],
+    creator: `@${business.instagramHandle}`,
   },
   robots: {
     index: true,
@@ -100,18 +120,27 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     name: business.name,
+    alternateName: [business.founderName, ...business.founderAliases],
     url: siteUrl,
     logo: `${siteUrl}${business.logo}`,
+    image: `${siteUrl}${business.logo}`,
     founder: {
       "@type": "Person",
       name: business.founderName,
+      alternateName: business.founderAliases,
+      sameAs: [managedByInstagramUrl, founderInstagramUrl],
     },
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer support",
       email: business.email,
     },
-    sameAs: [`https://wa.me/${business.whatsappNumber}`],
+    sameAs: [
+      `https://wa.me/${business.whatsappNumber}`,
+      instagramUrl,
+      managedByInstagramUrl,
+      founderInstagramUrl,
+    ],
   };
 
   const websiteSchema = {
@@ -123,6 +152,11 @@ export default function RootLayout({
     publisher: {
       "@type": "Organization",
       name: business.name,
+    },
+    about: {
+      "@type": "Person",
+      name: business.founderName,
+      sameAs: [managedByInstagramUrl, founderInstagramUrl],
     },
   };
 

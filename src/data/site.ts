@@ -6,6 +6,7 @@ const asset = (path: string) => resolveStoredAssetUrl(path);
 export const business = {
   name: "Little Art Heaven",
   founderName: "Srijita Nandy",
+  founderAliases: ["Srijita", "artistic_srijita_009", "itz_srijita_008"],
   tagline: "Playful handmade gifts, custom keepsakes, and tiny pieces of joy.",
   story:
     "Little Art Heaven is Srijita Nandy's warm little corner for thoughtful handmade gifting. Every piece is crafted with bright color, custom touches, and the kind of care that makes birthdays, thank-yous, and everyday surprises feel personal.",
@@ -13,6 +14,9 @@ export const business = {
     "Srijita turns photos, favorite characters, and heartfelt moments into keepsakes people want to hold onto. The studio blends handcrafted details with cheerful design, making each order feel like a one-of-a-kind gift.",
   email: process.env.BUSINESS_EMAIL || "hello@littleartheaven.in",
   whatsappNumber: process.env.BUSINESS_WHATSAPP_NUMBER || "919999999999",
+  instagramHandle: "little_art_heavan",
+  managedByInstagramHandle: "artistic_srijita_009",
+  founderInstagramHandle: "itz_srijita_008",
   logo: asset("/assets/brand/logo.jpg"),
   founderImage: asset("/assets/brand/founder-photo.jpg"),
 };
