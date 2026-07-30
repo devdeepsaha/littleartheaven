@@ -12,7 +12,7 @@ export function ProductCard({ product }: { product: ProductWithCategory }) {
   return (
     <article className="group overflow-hidden rounded-[1.35rem] border border-white/70 bg-white shadow-[0_14px_32px_rgba(15,23,42,0.08)] transition duration-200 ease-[var(--motion-ease-standard)] hover:-translate-y-0.5 hover:shadow-[0_18px_44px_rgba(15,23,42,0.12)] sm:rounded-[1.5rem] sm:shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
       <Link href={`/product/${product.slug}`} className="block">
-        <div className="relative min-h-[162px] overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(250,204,21,0.15),_transparent_55%),linear-gradient(180deg,#fff,#f8fafc)] sm:min-h-0 sm:aspect-[4/5]">
+        <div className="relative aspect-[4/5] overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(250,204,21,0.15),_transparent_55%),linear-gradient(180deg,#fff,#f8fafc)]">
           {/* Keeping the image motion inside the crop gives tactile zoom feedback without shifting the card itself. */}
           <MotionImage
             src={product.images[0]}

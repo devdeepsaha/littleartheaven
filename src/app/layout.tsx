@@ -81,6 +81,9 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  verification: {
+    google: "PAYCmm-w6R0jL1vy_FvKzmcHT5874IS4KVVe1rbLXNQ",
+  },
   category: "shopping",
 };
 
