@@ -33,7 +33,7 @@ export function ProductDetailView({ product }: { product: ProductWithCategory })
 
   return (
     <>
-      <section className="site-shell py-6 sm:py-8">
+      <section className="site-shell py-6 pb-30 sm:py-8 sm:pb-8">
         <div className="overflow-hidden rounded-[1.9rem] bg-white shadow-[0_20px_52px_rgba(15,23,42,0.07)]">
           <div className="grid gap-0 xl:grid-cols-[0.94fr_1.06fr]">
             <div className="border-b border-[#f3e7de] bg-white p-3 sm:p-4 xl:border-b-0 xl:border-r">
@@ -151,7 +151,7 @@ export function ProductDetailView({ product }: { product: ProductWithCategory })
                 ))}
               </div>
 
-              <div className="mt-6 rounded-[1.55rem] border border-[#f0e4da] bg-[#fff8f4] p-4 sm:p-5">
+              <div className="mt-6 rounded-[1.55rem] border border-[#f0e4da] bg-[#fff8f4] p-4 max-sm:hidden sm:p-5">
                 <p className="text-[11px] uppercase tracking-[0.28em] text-slate-500">
                   Add to cart
                 </p>
@@ -188,6 +188,33 @@ export function ProductDetailView({ product }: { product: ProductWithCategory })
           </div>
         </div>
       </section>
+
+      <div className="fixed inset-x-3 bottom-3 z-[55] sm:hidden">
+        <div className="rounded-[1.6rem] border border-[#eddcd1] bg-[rgba(255,253,250,0.96)] p-3 shadow-[0_18px_42px_rgba(15,23,42,0.16)] backdrop-blur-md">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="truncate text-[10px] uppercase tracking-[0.24em] text-slate-500">
+                {styleLabel}
+              </p>
+              <p className="truncate text-sm font-semibold text-slate-900">
+                {product.name}
+              </p>
+            </div>
+            <span className="shrink-0 rounded-full bg-amber-100 px-3 py-1.5 text-sm font-semibold text-amber-800">
+              {formatPrice(product.price)}
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <AddToCartButton
+              slug={product.slug}
+              disabled={!product.available}
+              showViewCart
+              imageUrl={activeImage}
+              label={`${product.name} ${styleLabel}`}
+            />
+          </div>
+        </div>
+      </div>
 
       {lightboxOpen ? (
         <div className="fixed inset-0 z-[80] bg-[#0f172ae8] px-3 py-4 backdrop-blur-sm sm:px-6 sm:py-6">

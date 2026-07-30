@@ -58,7 +58,6 @@ function normalizeCartLine(item: Partial<CartLine> & { slug: string; quantity: n
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartPulseKey, setCartPulseKey] = useState(0);
-  const [toast, setToast] = useState<string | null>(null);
   const [flights, setFlights] = useState<
     Array<{
       id: number;
@@ -93,8 +92,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   function celebrateAdd(meta?: AddItemMeta) {
     setCartPulseKey((value) => value + 1);
-    setToast(`Added ${meta?.label ? meta.label : "this handmade pick"} to your cart.`);
-    window.setTimeout(() => setToast(null), 2200);
 
     if (!meta?.originRect) {
       return;
@@ -184,8 +181,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   return (
     <CartContext.Provider value={value}>
       {children}
-      {/* This shared overlay keeps cart feedback consistent across grid and product detail add-to-cart moments. */}
-      <CartMotionLayer flights={flights} toast={toast} />
+      <CartMotionLayer flights={flights} />
     </CartContext.Provider>
   );
 }
