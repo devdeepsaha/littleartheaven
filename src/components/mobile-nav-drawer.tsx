@@ -12,6 +12,7 @@ type MobileNavDrawerProps = {
 const menuLinks = [
   { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
+  { href: "/about-srijita-nandy", label: "Myself" },
   { href: "/privacy-policy", label: "Privacy Policy" },
   { href: "/terms-and-conditions", label: "Terms and Conditions" },
   { href: "/refund-policy", label: "Refund Policy" },

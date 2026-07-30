@@ -23,7 +23,7 @@ export function CategoryCard({
         {/* Keeping the scale on the image wrapper preserves the soft tile lift without distorting text. */}
         <MotionImage
           src={image}
-          alt={name}
+          alt={`${name} category from Little Art Heaven`}
           fill
           sizes="(max-width: 640px) 64px, 80px"
           wrapperClassName="h-full w-full"

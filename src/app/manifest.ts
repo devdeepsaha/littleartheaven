@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { business } from "@/data/site";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -12,9 +13,9 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#fff8f4",
     icons: [
       {
-        src: "/favicon.ico",
-        sizes: "any",
-        type: "image/x-icon",
+        src: business.logo,
+        sizes: "512x512",
+        type: "image/jpeg",
       },
     ],
   };

@@ -53,7 +53,7 @@ export function ProductDetailView({ product }: { product: ProductWithCategory })
                     >
                       <MotionImage
                         src={image}
-                        alt={`${product.name} style ${index + 1}`}
+                        alt={`${product.name} style ${index + 1} by Little Art Heaven`}
                         fill
                         sizes="96px"
                         quality={64}
@@ -73,7 +73,7 @@ export function ProductDetailView({ product }: { product: ProductWithCategory })
                     <MotionImage
                       key={activeImage}
                       src={activeImage}
-                      alt={product.name}
+                      alt={`${product.name} selected design preview`}
                       fill
                       sizes="(max-width: 1280px) 100vw, 48vw"
                       loading="eager"
@@ -239,7 +239,7 @@ export function ProductDetailView({ product }: { product: ProductWithCategory })
               <MotionImage
                 key={`${activeImage}-lightbox`}
                 src={activeImage}
-                alt={product.name}
+                alt={`${product.name} full-size design preview`}
                 fill
                 sizes="100vw"
                 quality={90}

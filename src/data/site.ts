@@ -18,6 +18,7 @@ export const business = {
   managedByInstagramHandle: "artistic_srijita_009",
   founderInstagramHandle: "itz_srijita_008",
   logo: asset("/assets/brand/logo.jpg"),
+  socialImage: asset("/assets/brand/og-banner.jpg"),
   founderImage: asset("/assets/brand/founder-photo.jpg"),
 };
 

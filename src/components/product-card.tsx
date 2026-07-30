@@ -16,7 +16,7 @@ export function ProductCard({ product }: { product: ProductWithCategory }) {
           {/* Keeping the image motion inside the crop gives tactile zoom feedback without shifting the card itself. */}
           <MotionImage
             src={product.images[0]}
-            alt={product.name}
+            alt={`${product.name} by Little Art Heaven`}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
             quality={72}

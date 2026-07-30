@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { ProductDetailView } from "@/components/product-detail-view";
 import { getProductBySlug } from "@/lib/catalog";
+import { siteTitle } from "@/lib/seo";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://littleartheaven.vercel.app";
 
@@ -33,7 +34,7 @@ export async function generateMetadata({
       title,
       description,
       url: canonical,
-      siteName: "Little Art Heaven",
+      siteName: siteTitle,
       type: "website",
       images: product.images[0]
         ? [
@@ -43,6 +44,12 @@ export async function generateMetadata({
             },
           ]
         : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: product.images[0] ? [product.images[0]] : [],
     },
   };
 }
@@ -59,5 +66,40 @@ export default async function ProductPage({
     notFound();
   }
 
-  return <ProductDetailView product={product} />;
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description || product.shortDescription,
+    image: product.images,
+    sku: product.id,
+    category: product.category.name,
+    brand: {
+      "@type": "Brand",
+      name: "Little Art Heaven",
+    },
+    offers: {
+      "@type": "Offer",
+      url: `${siteUrl}/product/${product.slug}`,
+      priceCurrency: "INR",
+      price: product.price,
+      availability: product.available
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      seller: {
+        "@type": "Organization",
+        name: "Little Art Heaven",
+      },
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      <ProductDetailView product={product} />
+    </>
+  );
 }

@@ -29,7 +29,7 @@ export function FounderPortrait({
     <div className="relative aspect-[4/5] overflow-hidden rounded-[1.7rem] shadow-[0_18px_50px_rgba(149,115,92,0.18)]">
       <Image
         src={src}
-        alt={name}
+        alt={`Portrait of ${name}`}
         fill
         sizes="(max-width: 1024px) 100vw, 24vw"
         className="object-cover"

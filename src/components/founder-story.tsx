@@ -1,6 +1,7 @@
 import { business } from "@/data/site";
 import { FounderPortrait } from "@/components/founder-portrait";
 import { Reveal } from "@/components/ui/reveal";
+import Link from "next/link";
 
 export function FounderStory() {
   return (
@@ -38,6 +39,11 @@ export function FounderStory() {
               <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-700 sm:text-[15px]">
                 {business.founderBio}
               </p>
+              <div className="mt-4">
+                <Link href="/about-srijita-nandy" className="text-sm font-semibold text-sky-700">
+                  Learn more about {business.founderName}
+                </Link>
+              </div>
               <div className="mt-5 flex flex-wrap gap-2.5">
                 {[
                   "Handmade details",

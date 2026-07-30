@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { RouteTransition } from "@/components/ui/route-transition";
 import { business } from "@/data/site";
+import { getSocialImageUrl, siteDescription, siteTitle, siteUrl, toAbsoluteUrl } from "@/lib/seo";
 
 import "./globals.css";
 
@@ -20,10 +21,6 @@ const displayFont = Caveat({
   weight: ["700"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://littleartheaven.vercel.app";
-const siteTitle = "Little Art Heaven";
-const siteDescription =
-  "Little Art Heaven by Srijita Nandy offers handmade gifts, custom frames, lockets, clay art, painted bags, and thoughtful keepsakes.";
 const instagramUrl = `https://www.instagram.com/${business.instagramHandle}/`;
 const managedByInstagramUrl = `https://www.instagram.com/${business.managedByInstagramHandle}/`;
 const founderInstagramUrl = `https://www.instagram.com/${business.founderInstagramHandle}/`;
@@ -77,8 +74,8 @@ export const metadata: Metadata = {
     siteName: siteTitle,
     images: [
       {
-        url: business.logo,
-        alt: siteTitle,
+        url: getSocialImageUrl(),
+        alt: `${siteTitle} social banner`,
       },
     ],
     locale: "en_IN",
@@ -87,7 +84,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteTitle,
     description: siteDescription,
-    images: [business.logo],
+    images: [getSocialImageUrl()],
     creator: `@${business.instagramHandle}`,
   },
   robots: {
@@ -122,8 +119,8 @@ export default function RootLayout({
     name: business.name,
     alternateName: [business.founderName, ...business.founderAliases],
     url: siteUrl,
-    logo: `${siteUrl}${business.logo}`,
-    image: `${siteUrl}${business.logo}`,
+    logo: toAbsoluteUrl(business.logo),
+    image: getSocialImageUrl(),
     founder: {
       "@type": "Person",
       name: business.founderName,
@@ -152,6 +149,10 @@ export default function RootLayout({
     publisher: {
       "@type": "Organization",
       name: business.name,
+      logo: {
+        "@type": "ImageObject",
+        url: toAbsoluteUrl(business.logo),
+      },
     },
     about: {
       "@type": "Person",
