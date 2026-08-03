@@ -100,14 +100,7 @@ export function FounderStory() {
                   </div>
                 </div>
 
-                <div className="rounded-[1.7rem] border border-[#f0e2d7] bg-[#fffdf9] px-5 py-4 shadow-[0_10px_24px_rgba(15,23,42,0.06)]">
-                  <p className="text-xs uppercase tracking-[0.26em] text-slate-500">
-                    Why this section works
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    A real face, a short founder note, and a quick sense of what the brand feels like.
-                  </p>
-                </div>
+                
               </div>
             </div>
           </div>
