@@ -1,9 +1,11 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 
 import {
   createSupabaseAdminClient,
+  hasSupabaseAdminConfig,
   hasSupabaseConfig,
 } from "@/lib/supabase-server";
 import { generateOrderCode } from "@/lib/order-code";
@@ -15,7 +17,7 @@ import {
   ProductWithCategory,
 } from "@/types";
 
-const mockOrderPath = path.join(process.cwd(), ".data", "orders.json");
+const mockOrderPath = path.join(os.tmpdir(), "little-art-heaven", "orders.json");
 
 function calculateOrderItems(
   payload: CheckoutPayload,
@@ -86,7 +88,7 @@ export async function createOrder(
     items,
   };
 
-  if (hasSupabaseConfig()) {
+  if (hasSupabaseAdminConfig()) {
     try {
       const supabase = await createSupabaseAdminClient();
       const { error } = await supabase.from("orders").insert({
@@ -132,7 +134,7 @@ export async function createOrder(
 }
 
 export async function getAllOrders() {
-  if (hasSupabaseConfig()) {
+  if (hasSupabaseAdminConfig()) {
     const supabase = await createSupabaseAdminClient();
     const { data, error } = await supabase
       .from("orders")
@@ -178,7 +180,7 @@ export async function getAllOrders() {
 }
 
 export async function updateOrderStatus(id: string, status: OrderStatus) {
-  if (!hasSupabaseConfig()) {
+  if (!hasSupabaseAdminConfig()) {
     const existing = await getAllOrders();
     const updated = existing.map((order) =>
       order.id === id ? { ...order, status } : order,

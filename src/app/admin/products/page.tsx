@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { getAdminProducts } from "@/lib/catalog";
 import { requireAdminSession } from "@/lib/admin-auth";
-import { hasSupabaseConfig } from "@/lib/supabase-server";
+import { hasSupabaseAdminConfig, hasSupabaseConfig } from "@/lib/supabase-server";
 
 import { ImportAssetsPanel } from "@/components/admin/import-assets-panel";
 import { ProductForm } from "@/components/admin/product-form";
@@ -33,9 +33,9 @@ export default async function AdminProductsPage() {
         <p className="mt-3 text-sm leading-7 text-slate-600">
           Upload product photos directly, compress them below 1 MB, store them in Supabase, and manage availability or sold-out status from one place.
         </p>
-        {!hasSupabaseConfig() ? (
+        {!hasSupabaseAdminConfig() ? (
           <div className="mt-6 rounded-[1.5rem] border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
-            Preview mode: connect Supabase to make catalog editing and uploads live.
+            Preview mode: add full Supabase admin credentials to make catalog editing, uploads, and live product writes active.
           </div>
         ) : null}
       </div>

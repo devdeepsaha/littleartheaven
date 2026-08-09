@@ -5,3 +5,7 @@ export const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 export function hasSupabaseConfig() {
   return Boolean(supabaseUrl && supabaseAnonKey);
 }
+
+export function hasSupabaseAdminConfig() {
+  return Boolean(supabaseUrl && supabaseAnonKey && serviceRoleKey);
+}

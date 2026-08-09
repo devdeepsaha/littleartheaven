@@ -6,7 +6,7 @@ import path from "node:path";
 
 import { categories } from "@/data/site";
 import { publicCatalogTag } from "@/lib/catalog";
-import { createSupabaseAdminClient, hasSupabaseConfig } from "@/lib/supabase-server";
+import { createSupabaseAdminClient, hasSupabaseAdminConfig } from "@/lib/supabase-server";
 import { productImagesBucket } from "@/lib/storage";
 import { slugify } from "@/lib/utils";
 
@@ -31,7 +31,7 @@ function revalidateProductPaths(slug: string) {
 }
 
 export async function saveProductAction(formData: FormData) {
-  if (!hasSupabaseConfig()) {
+  if (!hasSupabaseAdminConfig()) {
     return;
   }
 
@@ -138,7 +138,7 @@ export async function importLocalAssetsAction(
 ): Promise<{ status: string; message: string }> {
   void prevState;
 
-  if (!hasSupabaseConfig()) {
+  if (!hasSupabaseAdminConfig()) {
     return {
       status: "error",
       message: "Supabase is not configured yet.",

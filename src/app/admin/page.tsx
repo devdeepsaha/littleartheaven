@@ -4,7 +4,7 @@ import { FounderPhotoPanel } from "@/components/admin/founder-photo-panel";
 import { LogoutButton } from "@/components/admin/logout-button";
 import { requireAdminSession } from "@/lib/admin-auth";
 import { getAllOrders } from "@/lib/orders";
-import { hasSupabaseConfig } from "@/lib/supabase-server";
+import { hasSupabaseAdminConfig, hasSupabaseConfig } from "@/lib/supabase-server";
 import { getProducts } from "@/lib/catalog";
 
 export default async function AdminHome() {
@@ -29,9 +29,9 @@ export default async function AdminHome() {
         {hasSupabaseConfig() ? <LogoutButton /> : null}
       </div>
 
-      {!hasSupabaseConfig() ? (
+      {!hasSupabaseAdminConfig() ? (
         <div className="mt-6 rounded-[1.75rem] border border-amber-200 bg-amber-50 px-5 py-4 text-sm leading-6 text-amber-900">
-          Supabase is not configured yet, so this dashboard is running in preview mode using seeded catalog data and local mock orders.
+          Supabase admin write access is not fully configured yet, so this dashboard is running in preview mode using seeded catalog data and fallback order storage.
         </div>
       ) : null}
 
@@ -41,7 +41,7 @@ export default async function AdminHome() {
           { label: "Orders", value: orders.length.toString() },
           {
             label: "Status",
-            value: hasSupabaseConfig() ? "Live data" : "Preview mode",
+            value: hasSupabaseAdminConfig() ? "Live data" : "Preview mode",
           },
         ].map((item) => (
           <div key={item.label} className="rounded-[1.75rem] bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">

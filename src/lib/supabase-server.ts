@@ -2,13 +2,14 @@ import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
 import {
+  hasSupabaseAdminConfig,
   hasSupabaseConfig,
   serviceRoleKey,
   supabaseAnonKey,
   supabaseUrl,
 } from "@/lib/supabase-config";
 
-export { hasSupabaseConfig };
+export { hasSupabaseAdminConfig, hasSupabaseConfig };
 
 export async function createSupabaseServerClient() {
   if (!supabaseUrl || !supabaseAnonKey) {

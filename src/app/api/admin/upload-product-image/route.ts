@@ -2,7 +2,12 @@ import { randomUUID } from "node:crypto";
 
 import { NextResponse } from "next/server";
 
-import { createSupabaseAdminClient, createSupabaseServerClient, hasSupabaseConfig } from "@/lib/supabase-server";
+import {
+  createSupabaseAdminClient,
+  createSupabaseServerClient,
+  hasSupabaseAdminConfig,
+  hasSupabaseConfig,
+} from "@/lib/supabase-server";
 import { productImagesBucket } from "@/lib/storage";
 
 async function ensureAdmin() {
@@ -17,6 +22,13 @@ async function ensureAdmin() {
 
 export async function POST(request: Request) {
   try {
+    if (!hasSupabaseAdminConfig()) {
+      return NextResponse.json(
+        { error: "Supabase admin storage is not configured yet." },
+        { status: 503 },
+      );
+    }
+
     if (!(await ensureAdmin())) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
