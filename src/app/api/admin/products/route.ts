@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { saveProductFromFields } from "@/lib/admin-products";
+import { deleteProductById, saveProductFromFields } from "@/lib/admin-products";
 import {
   createSupabaseServerClient,
   hasSupabaseAdminConfig,
@@ -58,6 +58,45 @@ export async function POST(request: Request) {
           error instanceof Error
             ? error.message
             : "Unable to save the product right now.",
+      },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    if (!hasSupabaseAdminConfig()) {
+      return NextResponse.json(
+        { status: "error", message: "Supabase admin write access is not configured yet." },
+        { status: 503 },
+      );
+    }
+
+    if (!(await ensureAdmin())) {
+      return NextResponse.json(
+        { status: "error", message: "Unauthorized" },
+        { status: 401 },
+      );
+    }
+
+    const body = (await request.json()) as {
+      id?: string;
+      slug?: string;
+    };
+
+    const result = await deleteProductById(body);
+    return NextResponse.json(result, {
+      status: result.status === "success" ? 200 : 400,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        status: "error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unable to delete the product right now.",
       },
       { status: 500 },
     );

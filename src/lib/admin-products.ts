@@ -12,6 +12,13 @@ export type SaveProductActionResult = {
   created?: boolean;
 };
 
+export type DeleteProductActionResult = {
+  status: "success" | "error";
+  message: string;
+  slug?: string;
+  deleted?: boolean;
+};
+
 function parseCheckboxValue(value: FormDataEntryValue | string | boolean | null | undefined) {
   return value === true || value === "on" || value === "true";
 }
@@ -166,4 +173,66 @@ export async function saveProductFromFormData(
     available: formData.get("available") === "on",
     featured: formData.get("featured") === "on",
   });
+}
+
+export async function deleteProductById(fields: {
+  id?: string;
+  slug?: string;
+}): Promise<DeleteProductActionResult> {
+  if (!hasSupabaseAdminConfig()) {
+    return {
+      status: "error",
+      message: "Supabase admin write access is not configured yet.",
+      deleted: false,
+    };
+  }
+
+  const id = String(fields.id || "").trim();
+  const slug = String(fields.slug || "").trim();
+
+  if (!id) {
+    return {
+      status: "error",
+      message: "Missing product id for deletion.",
+      slug,
+      deleted: false,
+    };
+  }
+
+  const supabase = await createSupabaseAdminClient();
+
+  try {
+    const { error } = await supabase.from("products").delete().eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+
+    if (slug) {
+      revalidateProductPaths(slug);
+    } else {
+      revalidateTag(publicCatalogTag, "max");
+      revalidatePath("/");
+      revalidatePath("/shop");
+      revalidatePath("/admin");
+      revalidatePath("/admin/products");
+    }
+
+    return {
+      status: "success",
+      message: "Product deleted successfully.",
+      slug,
+      deleted: true,
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unable to delete the product right now.",
+      slug,
+      deleted: false,
+    };
+  }
 }

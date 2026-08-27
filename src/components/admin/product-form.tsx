@@ -5,7 +5,10 @@ import { useEffect, useId, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { categories } from "@/data/site";
-import type { SaveProductActionResult } from "@/lib/admin-products";
+import type {
+  DeleteProductActionResult,
+  SaveProductActionResult,
+} from "@/lib/admin-products";
 import { formatPrice } from "@/lib/utils";
 import { ProductWithCategory } from "@/types";
 
@@ -133,9 +136,47 @@ async function saveProductRequest(formData: FormData): Promise<SaveProductAction
   }
 }
 
+async function deleteProductRequest(payload: {
+  id: string;
+  slug: string;
+}): Promise<DeleteProductActionResult> {
+  const response = await fetch("/api/admin/products", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  try {
+    const result = (await response.json()) as DeleteProductActionResult;
+
+    if (
+      result &&
+      (result.status === "success" || result.status === "error") &&
+      typeof result.message === "string"
+    ) {
+      return result;
+    }
+
+    return {
+      status: "error",
+      message: "The product delete response was invalid. Please try again.",
+      deleted: false,
+    };
+  } catch {
+    return {
+      status: "error",
+      message: "The product delete response was invalid. Please try again.",
+      deleted: false,
+    };
+  }
+}
+
 export function ProductForm({ product }: ProductFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [isDeleting, startDeleteTransition] = useTransition();
   const [uploadState, setUploadState] = useState<UploadState>({
     images: product?.images || [],
     uploading: false,
@@ -486,13 +527,52 @@ export function ProductForm({ product }: ProductFormProps) {
       </div>
 
       <div className="mt-6">
-        <button
-          type="submit"
-          disabled={uploadState.uploading || isPending}
-          className="rounded-full bg-[linear-gradient(135deg,#f7c9b0_0%,#e89a8f_100%)] px-6 py-3 text-sm font-semibold text-[#5b312d] shadow-[0_12px_30px_rgba(213,147,124,0.24)] disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isPending ? "Saving..." : product ? "Save product changes" : "Create product"}
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="submit"
+            disabled={uploadState.uploading || isPending || isDeleting}
+            className="rounded-full bg-[linear-gradient(135deg,#f7c9b0_0%,#e89a8f_100%)] px-6 py-3 text-sm font-semibold text-[#5b312d] shadow-[0_12px_30px_rgba(213,147,124,0.24)] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isPending ? "Saving..." : product ? "Save product changes" : "Create product"}
+          </button>
+
+          {product ? (
+            <button
+              type="button"
+              disabled={isPending || isDeleting}
+              onClick={() => {
+                const confirmed = window.confirm(
+                  `Delete "${product.name}"? This will remove it from the live catalog.`,
+                );
+
+                if (!confirmed) {
+                  return;
+                }
+
+                startDeleteTransition(async () => {
+                  const result = await deleteProductRequest({
+                    id: product.id,
+                    slug: product.slug,
+                  });
+
+                  setToast({
+                    status: result.status,
+                    message: result.message,
+                  });
+
+                  if (result.status !== "success") {
+                    return;
+                  }
+
+                  router.refresh();
+                });
+              }}
+              className="rounded-full border border-rose-200 bg-rose-50 px-5 py-3 text-sm font-semibold text-rose-700 shadow-[0_10px_24px_rgba(244,63,94,0.08)] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isDeleting ? "Deleting..." : "Delete product"}
+            </button>
+          ) : null}
+        </div>
       </div>
     </form>
   );
