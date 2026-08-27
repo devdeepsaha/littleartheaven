@@ -19,6 +19,40 @@ export type DeleteProductActionResult = {
   deleted?: boolean;
 };
 
+function formatDatabaseError(error: unknown, fallbackMessage: string) {
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+
+  if (error && typeof error === "object") {
+    const maybeError = error as {
+      message?: unknown;
+      details?: unknown;
+      hint?: unknown;
+      code?: unknown;
+    };
+
+    const parts = [
+      typeof maybeError.message === "string" ? maybeError.message : "",
+      typeof maybeError.details === "string" && maybeError.details
+        ? `Details: ${maybeError.details}`
+        : "",
+      typeof maybeError.hint === "string" && maybeError.hint
+        ? `Hint: ${maybeError.hint}`
+        : "",
+      typeof maybeError.code === "string" && maybeError.code
+        ? `Code: ${maybeError.code}`
+        : "",
+    ].filter(Boolean);
+
+    if (parts.length) {
+      return parts.join(" ");
+    }
+  }
+
+  return fallbackMessage;
+}
+
 function parseCheckboxValue(value: FormDataEntryValue | string | boolean | null | undefined) {
   return value === true || value === "on" || value === "true";
 }
@@ -141,12 +175,11 @@ export async function saveProductFromFields(fields: {
       created: !id,
     };
   } catch (error) {
+    console.error("Product save failed", error);
+
     return {
       status: "error",
-      message:
-        error instanceof Error
-          ? error.message
-          : "Unable to save the product right now.",
+      message: formatDatabaseError(error, "Unable to save the product right now."),
       slug: baseSlug,
       created: false,
     };
@@ -225,12 +258,11 @@ export async function deleteProductById(fields: {
       deleted: true,
     };
   } catch (error) {
+    console.error("Product delete failed", error);
+
     return {
       status: "error",
-      message:
-        error instanceof Error
-          ? error.message
-          : "Unable to delete the product right now.",
+      message: formatDatabaseError(error, "Unable to delete the product right now."),
       slug,
       deleted: false,
     };
