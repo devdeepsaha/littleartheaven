@@ -10,6 +10,13 @@ import { createSupabaseAdminClient, hasSupabaseAdminConfig } from "@/lib/supabas
 import { productImagesBucket } from "@/lib/storage";
 import { slugify } from "@/lib/utils";
 
+export type SaveProductActionResult = {
+  status: "success" | "error";
+  message: string;
+  slug?: string;
+  created?: boolean;
+};
+
 function getImageUrls(formData: FormData) {
   return [1, 2, 3, 4, 5]
     .map((index) => String(formData.get(`image_${index}`) || "").trim())
@@ -30,9 +37,14 @@ function revalidateProductPaths(slug: string) {
   revalidatePath(`/product/${slug}`);
 }
 
-export async function saveProductAction(formData: FormData) {
+export async function saveProductAction(
+  formData: FormData,
+): Promise<SaveProductActionResult> {
   if (!hasSupabaseAdminConfig()) {
-    return;
+    return {
+      status: "error",
+      message: "Supabase admin write access is not configured yet.",
+    };
   }
 
   const id = String(formData.get("id") || "").trim();
@@ -47,31 +59,60 @@ export async function saveProductAction(formData: FormData) {
   const featured = parseCheckbox(formData, "featured");
 
   if (!name || !categoryId || !categories.find((item) => item.id === categoryId)) {
-    return;
+    return {
+      status: "error",
+      message: "Please add a product name and a valid category.",
+    };
   }
 
-  const supabase = await createSupabaseAdminClient();
   const slug = slugify(name);
-  const payload = {
-    slug,
-    category_id: categoryId,
-    name,
-    price: Number.isFinite(price) ? price : 0,
-    description,
-    short_description: shortDescription || description,
-    image_urls: imageUrls,
-    is_published: published,
-    is_available: available,
-    is_featured: featured,
-  };
+  const supabase = await createSupabaseAdminClient();
 
-  if (id) {
-    await supabase.from("products").update(payload).eq("id", id);
-  } else {
-    await supabase.from("products").insert(payload);
+  try {
+    const payload = {
+      slug,
+      category_id: categoryId,
+      name,
+      price: Number.isFinite(price) ? price : 0,
+      description,
+      short_description: shortDescription || description,
+      image_urls: imageUrls,
+      is_published: published,
+      is_available: available,
+      is_featured: featured,
+    };
+
+    if (id) {
+      const { error } = await supabase.from("products").update(payload).eq("id", id);
+      if (error) {
+        throw error;
+      }
+    } else {
+      const { error } = await supabase.from("products").insert(payload);
+      if (error) {
+        throw error;
+      }
+    }
+
+    revalidateProductPaths(slug);
+
+    return {
+      status: "success",
+      message: id ? "Product changes saved successfully." : "New product created successfully.",
+      slug,
+      created: !id,
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unable to save the product right now.",
+      slug,
+      created: !id,
+    };
   }
-
-  revalidateProductPaths(slug);
 }
 
 async function ensureProductBucket() {

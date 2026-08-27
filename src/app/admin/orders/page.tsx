@@ -22,8 +22,8 @@ export default async function AdminOrdersPage() {
   }
 
   return (
-    <section className="site-shell py-10">
-      <div className="rounded-[2.25rem] bg-white px-6 py-8 shadow-[0_22px_60px_rgba(15,23,42,0.08)]">
+    <section className="space-y-8">
+      <div className="rounded-[2.25rem] border border-white/70 bg-white/88 px-6 py-8 shadow-[0_22px_60px_rgba(15,23,42,0.08)]">
         <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Order management</p>
         <h1 className="mt-3 font-[family-name:var(--font-display)] text-5xl text-slate-900">
           Incoming orders
@@ -32,10 +32,10 @@ export default async function AdminOrdersPage() {
           Each order is saved with a readable order code, customer details, and itemized totals.
         </p>
       </div>
-      <div className="mt-8 grid gap-4">
+      <div className="grid gap-4">
         {orders.length ? (
           orders.map((order: OrderRecord) => (
-            <article key={order.id} className="rounded-[1.75rem] bg-white p-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+            <article key={order.id} className="rounded-[1.75rem] border border-white/70 bg-white/88 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
               <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-[0.25em] text-slate-500">

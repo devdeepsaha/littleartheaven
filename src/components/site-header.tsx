@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 
@@ -5,7 +7,7 @@ import { business } from "@/data/site";
 import { CartCount } from "@/components/cart-count";
 import { MobileNavDrawer } from "@/components/mobile-nav-drawer";
 
-export async function SiteHeader() {
+export function SiteHeader() {
   return (
     <header className="site-shell sticky top-3 z-50 pt-3">
       <div className="rounded-[2rem] border border-white/70 bg-white/92 px-4 py-3 shadow-[0_20px_50px_rgba(31,41,55,0.12)] backdrop-blur">

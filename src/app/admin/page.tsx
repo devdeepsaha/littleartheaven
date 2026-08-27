@@ -15,8 +15,8 @@ export default async function AdminHome() {
   const [orders, products] = await Promise.all([getAllOrders(), getProducts()]);
 
   return (
-    <section className="site-shell py-10">
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-[2.25rem] bg-slate-900 px-6 py-8 text-white shadow-[0_22px_60px_rgba(15,23,42,0.2)]">
+    <section className="space-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-[2.25rem] border border-white/60 bg-[linear-gradient(135deg,#101828_0%,#1f2937_100%)] px-6 py-8 text-white shadow-[0_22px_60px_rgba(15,23,42,0.2)]">
         <div>
           <p className="text-xs uppercase tracking-[0.35em] text-slate-300">Admin panel</p>
           <h1 className="mt-3 font-[family-name:var(--font-display)] text-5xl">
@@ -44,25 +44,25 @@ export default async function AdminHome() {
             value: hasSupabaseAdminConfig() ? "Live data" : "Preview mode",
           },
         ].map((item) => (
-          <div key={item.label} className="rounded-[1.75rem] bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+          <div key={item.label} className="rounded-[1.75rem] border border-white/70 bg-white/88 p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
             <p className="text-sm uppercase tracking-[0.25em] text-slate-500">{item.label}</p>
             <p className="mt-3 text-4xl font-semibold text-slate-900">{item.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="mt-8">
+      <div>
         <FounderPhotoPanel />
       </div>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
-        <Link href="/admin/products" className="rounded-[1.75rem] bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+      <div className="grid gap-6 md:grid-cols-2">
+        <Link href="/admin/products" className="rounded-[1.75rem] border border-white/70 bg-white/88 p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
           <h2 className="text-2xl font-semibold text-slate-900">Manage products</h2>
           <p className="mt-3 text-sm leading-6 text-slate-600">
             Review seeded items, add products, and update pricing or publish status when Supabase is connected.
           </p>
         </Link>
-        <Link href="/admin/orders" className="rounded-[1.75rem] bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+        <Link href="/admin/orders" className="rounded-[1.75rem] border border-white/70 bg-white/88 p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
           <h2 className="text-2xl font-semibold text-slate-900">Manage orders</h2>
           <p className="mt-3 text-sm leading-6 text-slate-600">
             Track inquiries, contact customers, and update the order workflow from new to completed.

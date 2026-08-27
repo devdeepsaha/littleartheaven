@@ -1,15 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { useId, useState, useTransition } from "react";
+import { useEffect, useId, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
+import type { SaveProductActionResult } from "@/app/admin/products/actions";
 import { categories } from "@/data/site";
 import { formatPrice } from "@/lib/utils";
 import { ProductWithCategory } from "@/types";
 
 type ProductFormProps = {
   product?: ProductWithCategory;
-  saveAction: (formData: FormData) => void | Promise<void>;
+  saveAction: (formData: FormData) => Promise<SaveProductActionResult>;
 };
 
 type UploadState = {
@@ -17,6 +19,11 @@ type UploadState = {
   uploading: boolean;
   error: string | null;
 };
+
+type ToastState = {
+  status: "success" | "error";
+  message: string;
+} | null;
 
 async function readUploadResponse(response: Response) {
   try {
@@ -78,29 +85,79 @@ async function compressImage(file: File, maxBytes = 1_000_000) {
 }
 
 export function ProductForm({ product, saveAction }: ProductFormProps) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [uploadState, setUploadState] = useState<UploadState>({
     images: product?.images || [],
     uploading: false,
     error: null,
   });
+  const [toast, setToast] = useState<ToastState>(null);
   const fileInputId = useId();
+  const isNewProductForm = !product;
 
   const canUploadMore = uploadState.images.length < 5;
 
+  useEffect(() => {
+    if (!toast) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setToast(null);
+    }, 3200);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [toast]);
+
   return (
     <form
-      action={(formData) => {
+      onSubmit={(event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const formData = new FormData(form);
+
         uploadState.images.forEach((image, index) => {
           formData.set(`image_${index + 1}`, image);
         });
 
         startTransition(async () => {
-          await saveAction(formData);
+          const result = await saveAction(formData);
+
+          setToast({
+            status: result.status,
+            message: result.message,
+          });
+
+          if (result.status !== "success") {
+            return;
+          }
+
+          router.refresh();
+
+          if (isNewProductForm) {
+            form.reset();
+            setUploadState({
+              images: [],
+              uploading: false,
+              error: null,
+            });
+          }
         });
       }}
       className="rounded-[1.75rem] bg-white p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)]"
     >
+      {toast ? (
+        <div
+          className={`mb-4 rounded-[1.1rem] border px-4 py-3 text-sm font-semibold ${
+            toast.status === "success"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+              : "border-rose-200 bg-rose-50 text-rose-700"
+          }`}
+        >
+          {toast.message}
+        </div>
+      ) : null}
       <input type="hidden" name="id" defaultValue={product?.id || ""} />
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1">
