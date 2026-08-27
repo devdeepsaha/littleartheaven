@@ -4,14 +4,13 @@ import Image from "next/image";
 import { useEffect, useId, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import type { SaveProductActionResult } from "@/app/admin/products/actions";
 import { categories } from "@/data/site";
+import type { SaveProductActionResult } from "@/lib/admin-products";
 import { formatPrice } from "@/lib/utils";
 import { ProductWithCategory } from "@/types";
 
 type ProductFormProps = {
   product?: ProductWithCategory;
-  saveAction: (formData: FormData) => Promise<SaveProductActionResult>;
 };
 
 type UploadState = {
@@ -84,7 +83,57 @@ async function compressImage(file: File, maxBytes = 1_000_000) {
   });
 }
 
-export function ProductForm({ product, saveAction }: ProductFormProps) {
+async function saveProductRequest(formData: FormData): Promise<SaveProductActionResult> {
+  const payload = {
+    id: String(formData.get("id") || "").trim(),
+    categoryId: String(formData.get("categoryId") || "").trim(),
+    name: String(formData.get("name") || "").trim(),
+    shortDescription: String(formData.get("shortDescription") || "").trim(),
+    description: String(formData.get("description") || "").trim(),
+    price: String(formData.get("price") || "0").trim(),
+    imageUrls: [1, 2, 3, 4, 5]
+      .map((index) => String(formData.get(`image_${index}`) || "").trim())
+      .filter(Boolean)
+      .slice(0, 5),
+    available: formData.get("available") === "on",
+    published: formData.get("published") === "on",
+    featured: formData.get("featured") === "on",
+  };
+
+  const response = await fetch("/api/admin/products", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  try {
+    const result = (await response.json()) as SaveProductActionResult;
+
+    if (
+      result &&
+      (result.status === "success" || result.status === "error") &&
+      typeof result.message === "string"
+    ) {
+      return result;
+    }
+
+    return {
+      status: "error",
+      message: "The product save response was invalid. Please try again.",
+      created: false,
+    };
+  } catch {
+    return {
+      status: "error",
+      message: "The product save response was invalid. Please try again.",
+      created: false,
+    };
+  }
+}
+
+export function ProductForm({ product }: ProductFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [uploadState, setUploadState] = useState<UploadState>({
@@ -122,7 +171,7 @@ export function ProductForm({ product, saveAction }: ProductFormProps) {
         });
 
         startTransition(async () => {
-          const result = await saveAction(formData);
+          const result = await saveProductRequest(formData);
 
           setToast({
             status: result.status,

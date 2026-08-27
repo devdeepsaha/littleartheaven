@@ -4,14 +4,12 @@ import { useEffect } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
-import type { SaveProductActionResult } from "@/app/admin/products/actions";
 import { ProductForm } from "@/components/admin/product-form";
 import { ProductWithCategory } from "@/types";
 import { formatPrice } from "@/lib/utils";
 
 type ProductEditorListProps = {
   products: ProductWithCategory[];
-  saveAction: (formData: FormData) => Promise<SaveProductActionResult>;
 };
 
 function ProductStatusPill({
@@ -36,7 +34,6 @@ function ProductStatusPill({
 
 export function ProductEditorList({
   products,
-  saveAction,
 }: ProductEditorListProps) {
   const pathname = usePathname();
 
@@ -161,7 +158,7 @@ export function ProductEditorList({
                   </summary>
 
                   <div className="border-t border-[#f0e4da] p-3 sm:p-4">
-                    <ProductForm product={product} saveAction={saveAction} />
+                    <ProductForm product={product} />
                   </div>
                 </details>
               ))}

@@ -6,7 +6,6 @@ import { hasSupabaseAdminConfig, hasSupabaseConfig } from "@/lib/supabase-server
 
 import { ProductEditorList } from "@/components/admin/product-editor-list";
 import { ProductForm } from "@/components/admin/product-form";
-import { saveProductAction } from "./actions";
 
 export const metadata: Metadata = {
   title: "Admin catalog",
@@ -41,10 +40,10 @@ export default async function AdminProductsPage() {
       </div>
 
       <div className="rounded-[2rem] border border-[#f0ddd2] bg-[linear-gradient(135deg,#fffaf5_0%,#fff4ee_100%)] p-4 shadow-[0_20px_50px_rgba(15,23,42,0.06)] sm:p-5">
-        <ProductForm saveAction={saveProductAction} />
+        <ProductForm />
       </div>
 
-      <ProductEditorList products={products} saveAction={saveProductAction} />
+      <ProductEditorList products={products} />
     </section>
   );
 }
