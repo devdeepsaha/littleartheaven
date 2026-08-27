@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useId, useState } from "react";
 
 import { business } from "@/data/site";
 
@@ -50,12 +50,22 @@ async function compressImage(file: File, maxBytes = 1_000_000) {
   });
 }
 
+async function readUploadResponse(response: Response) {
+  try {
+    return (await response.json()) as { error?: string; url?: string };
+  } catch {
+    return {
+      error: "The upload response was invalid. Please try again.",
+    };
+  }
+}
+
 export function FounderPhotoPanel() {
   const [imageUrl, setImageUrl] = useState<string | null>(business.founderImage);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputId = useId();
 
   return (
     <div className="rounded-[1.75rem] bg-white p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
@@ -70,19 +80,19 @@ export function FounderPhotoPanel() {
           <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
             Upload one portrait here and it will appear automatically in the founder story section on the storefront.
           </p>
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
+          <label
+            htmlFor={fileInputId}
+            aria-disabled={uploading}
             className="mt-5 rounded-full bg-[linear-gradient(135deg,#f7c9b0_0%,#e89a8f_100%)] px-5 py-3 text-sm font-semibold text-[#5b312d] shadow-[0_12px_30px_rgba(213,147,124,0.24)] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {uploading ? "Uploading photo..." : "Upload founder photo"}
-          </button>
+          </label>
           <input
-            ref={fileInputRef}
+            id={fileInputId}
             type="file"
             accept="image/png,image/jpeg,image/webp"
-            className="hidden"
+            disabled={uploading}
+            className="sr-only"
             onChange={async (event) => {
               const file = event.target.files?.[0];
               if (!file) {
@@ -106,7 +116,7 @@ export function FounderPhotoPanel() {
                   body: formData,
                 });
 
-                const body = (await response.json()) as { error?: string; url?: string };
+                const body = await readUploadResponse(response);
                 if (!response.ok || !body.url) {
                   throw new Error(body.error || "Unable to upload founder photo.");
                 }

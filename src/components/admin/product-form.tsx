@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, useTransition } from "react";
+import { useId, useState, useTransition } from "react";
 
 import { categories } from "@/data/site";
 import { formatPrice } from "@/lib/utils";
@@ -17,6 +17,16 @@ type UploadState = {
   uploading: boolean;
   error: string | null;
 };
+
+async function readUploadResponse(response: Response) {
+  try {
+    return (await response.json()) as { error?: string; url?: string };
+  } catch {
+    return {
+      error: "The upload response was invalid. Please try again.",
+    };
+  }
+}
 
 async function compressImage(file: File, maxBytes = 1_000_000) {
   const bitmap = await createImageBitmap(file);
@@ -74,7 +84,7 @@ export function ProductForm({ product, saveAction }: ProductFormProps) {
     uploading: false,
     error: null,
   });
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputId = useId();
 
   const canUploadMore = uploadState.images.length < 5;
 
@@ -245,9 +255,9 @@ export function ProductForm({ product, saveAction }: ProductFormProps) {
           ))}
 
           {canUploadMore ? (
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
+            <label
+              htmlFor={fileInputId}
+              aria-disabled={uploadState.uploading}
               className="flex min-h-[180px] flex-col items-center justify-center rounded-[1.2rem] border border-dashed border-[#e6c8b8] bg-[#fffaf7] px-4 text-center"
             >
               <span className="rounded-full bg-[#f7c9b0] px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#5b312d]">
@@ -258,16 +268,17 @@ export function ProductForm({ product, saveAction }: ProductFormProps) {
                 <br />
                 Auto-compressed to under 1 MB.
               </p>
-            </button>
+            </label>
           ) : null}
         </div>
 
         <input
-          ref={fileInputRef}
+          id={fileInputId}
           type="file"
           accept="image/png,image/jpeg,image/webp"
           multiple
-          className="hidden"
+          disabled={uploadState.uploading}
+          className="sr-only"
           onChange={async (event) => {
             const files = Array.from(event.target.files || []);
             if (!files.length) {
@@ -295,7 +306,7 @@ export function ProductForm({ product, saveAction }: ProductFormProps) {
                   body: uploadFormData,
                 });
 
-                const body = (await response.json()) as { error?: string; url?: string };
+                const body = await readUploadResponse(response);
                 if (!response.ok || !body.url) {
                   throw new Error(body.error || "Image upload failed.");
                 }

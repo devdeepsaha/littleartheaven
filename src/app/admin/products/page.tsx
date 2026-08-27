@@ -4,7 +4,6 @@ import { getAdminProducts } from "@/lib/catalog";
 import { requireAdminSession } from "@/lib/admin-auth";
 import { hasSupabaseAdminConfig, hasSupabaseConfig } from "@/lib/supabase-server";
 
-import { ImportAssetsPanel } from "@/components/admin/import-assets-panel";
 import { ProductForm } from "@/components/admin/product-form";
 import { saveProductAction } from "./actions";
 
@@ -38,10 +37,6 @@ export default async function AdminProductsPage() {
             Preview mode: add full Supabase admin credentials to make catalog editing, uploads, and live product writes active.
           </div>
         ) : null}
-      </div>
-
-      <div className="mt-8">
-        <ImportAssetsPanel />
       </div>
 
       <div className="mt-8">
