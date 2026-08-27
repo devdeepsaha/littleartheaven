@@ -200,6 +200,12 @@ export function ProductForm({ product }: ProductFormProps) {
     return () => window.clearTimeout(timeoutId);
   }, [toast]);
 
+  function refreshAfterSuccess() {
+    window.setTimeout(() => {
+      router.refresh();
+    }, 900);
+  }
+
   return (
     <form
       onSubmit={(event) => {
@@ -223,7 +229,7 @@ export function ProductForm({ product }: ProductFormProps) {
             return;
           }
 
-          router.refresh();
+          refreshAfterSuccess();
 
           if (isNewProductForm) {
             form.reset();
@@ -564,7 +570,7 @@ export function ProductForm({ product }: ProductFormProps) {
                     return;
                   }
 
-                  router.refresh();
+                  refreshAfterSuccess();
                 });
               }}
               className="rounded-full border border-rose-200 bg-rose-50 px-5 py-3 text-sm font-semibold text-rose-700 shadow-[0_10px_24px_rgba(244,63,94,0.08)] disabled:cursor-not-allowed disabled:opacity-60"
